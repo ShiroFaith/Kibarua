@@ -1,5 +1,5 @@
-node_modules/
-.env
+# NOTE: node_modules and .env are intentionally committed per project request.
+# .env contains a dev JWT secret - rotate it before any real deployment.
 *.log
 data/*.sqlite
 data/*.sqlite-journal
