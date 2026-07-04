@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | Kibarua Platform</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="logo"><h2>KIBARUA</h2></div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+            <a href="pages/auth/login.html" onclick="openModal('login-modal')">Login</a>
+            <a href="pages/auth/register.html" class="btn-primary" style="color: white;">Sign Up</a>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero" style="height: 40vh;">
+            <div class="glass-card">
+                <h1>Get In Touch</h1>
+                <p>We'd love to hear from you. Send us a message!</p>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="contact-section">
+            <div class="container">
+                <div class="contact-wrapper">
+                    <div class="contact-form">
+                        <h2>Send us a Message</h2>
+                        <form onsubmit="handleSubmit(event)">
+                            <div class="input-group">
+                                <label>Full Name</label>
+                                <input type="text" id="contact-name" placeholder="Your Name" required>
+                            </div>
+                            <div class="input-group">
+                                <label>Email</label>
+                                <input type="email" id="contact-email" placeholder="your@email.com" required>
+                            </div>
+                            <div class="input-group">
+                                <label>Subject</label>
+                                <input type="text" id="contact-subject" placeholder="How can we help?" required>
+                            </div>
+                            <div class="input-group">
+                                <label>Message</label>
+                                <textarea id="contact-message" placeholder="Tell us more..." rows="5" required></textarea>
+                            </div>
+                            <button type="submit" class="btn-primary w-100">Send Message</button>
+                        </form>
+                    </div>
+
+                    <div class="contact-info">
+                        <h2>Contact Information</h2>
+                        <div class="info-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <h4>Address</h4>
+                                <p>123 Business Street<br>Mombasa, Kenya</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-phone"></i>
+                            <div>
+                                <h4>Phone</h4>
+                                <p>+254 798938869</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <h4>Email</h4>
+                                <p>info@kibarua.co.ke</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-clock"></i>
+                            <div>
+                                <h4>Business Hours</h4>
+                                <p>Mon - Fri: 9:00 AM - 5:00 PM<br>Sat - Sun: 10:00 AM - 2:00 PM</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="faq-section">
+            <div class="container">
+                <h2>Frequently Asked Questions</h2>
+                <div class="faq-grid">
+                    <div class="faq-item glass-card">
+                        <h4><i class="fas fa-question-circle"></i> How do I get started?</h4>
+                        <p>Sign up as a job seeker or employer, complete your profile, and you're ready to go!</p>
+                    </div>
+                    <div class="faq-item glass-card">
+                        <h4><i class="fas fa-question-circle"></i> Is my payment secure?</h4>
+                        <p>Yes, we use industry-standard encryption to protect all transactions.</p>
+                    </div>
+                    <div class="faq-item glass-card">
+                        <h4><i class="fas fa-question-circle"></i> How are disputes handled?</h4>
+                        <p>Our support team reviews all disputes and works to find fair solutions.</p>
+                    </div>
+                    <div class="faq-item glass-card">
+                        <h4><i class="fas fa-question-circle"></i> What areas do you cover?</h4>
+                        <p>We currently serve all major cities and towns across Kenya.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>KIBARUA</h4>
+                    <p>Empowering Kenya's informal workforce through technology.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="login.html">Login</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect With Us</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Kibarua Platform. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function handleSubmit(event) {
+            event.preventDefault();
+            alert("Thank you for your message! We'll get back to you soon.");
+            event.target.reset();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post a Job | Kibarua</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .job-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 16px;
+            color: #999;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-section h3 {
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .budget-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .skill-tag {
+            background: #667eea;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 5px 5px 5px 0;
+        }
+
+        .skill-tag button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .add-skill-input {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .add-skill-input input {
+            flex: 1;
+        }
+
+        .add-skill-input button {
+            padding: 8px 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .button-group button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-post {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-post:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .btn-cancel {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-cancel:hover {
+            background: #e0e0e0;
+        }
+
+        .job-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .job-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .job-status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-open {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-in-progress {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-completed {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .job-meta {
+            display: flex;
+            gap: 20px;
+            margin: 15px 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .job-budget {
+            font-size: 16px;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .job-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .job-actions button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #5568d3;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #c82333;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .alert.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state i {
+            font-size: 60px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .tab {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+
+            .job-meta {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="logo"><h2>KIBARUA</h2></div>
+        <div class="nav-links">
+            <a href="../../index.html">Home</a>
+            <a href="../../pages/dashboard/dashboard.html">Dashboard</a>
+            <a href="#" class="btn-primary" onclick="logout()" style="color: white;">Logout</a>
+        </div>
+    </nav>
+
+    <main class="job-container">
+        <div class="alert success" id="successAlert"></div>
+        <div class="alert error" id="errorAlert"></div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('post')">Post a Job</button>
+            <button class="tab" onclick="switchTab('manage')">My Jobs</button>
+        </div>
+
+        <!-- Post Job Tab -->
+        <div id="post" class="tab-content active">
+            <div class="form-section">
+                <h3>Post a New Job</h3>
+
+                <form id="jobForm">
+                    <!-- Job Details -->
+                    <fieldset class="form-section">
+                        <h4>Job Details</h4>
+                        
+                        <div class="form-row full">
+                            <div class="form-group">
+                                <label>Job Title *</label>
+                                <input type="text" id="jobTitle" placeholder="E.g., Build a mobile app" required>
+                                <small style="color: #999;">10-200 characters</small>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Category *</label>
+                                <select id="jobCategory" required>
+                                    <option value="">Select Category</option>
+                                    <option value="web_development">Web Development</option>
+                                    <option value="mobile_development">Mobile Development</option>
+                                    <option value="design">Design & UX</option>
+                                    <option value="writing">Writing & Content</option>
+                                    <option value="digital_marketing">Digital Marketing</option>
+                                    <option value="data_analysis">Data Analysis</option>
+                                    <option value="accounting">Accounting & Finance</option>
+                                    <option value="administrative">Administrative</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Experience Level *</label>
+                                <select id="experienceLevel" required>
+                                    <option value="entry">Entry Level</option>
+                                    <option value="intermediate" selected>Intermediate</option>
+                                    <option value="expert">Expert</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row full">
+                            <div class="form-group">
+                                <label>Job Description *</label>
+                                <textarea id="jobDescription" placeholder="Describe the job, requirements, deliverables..." required></textarea>
+                                <small style="color: #999;">Min. 50 characters</small>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Budget -->
+                    <fieldset class="form-section">
+                        <h4>Budget</h4>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Budget Type *</label>
+                                <select id="budgetType" onchange="updateBudgetFields()" required>
+                                    <option value="fixed" selected>Fixed Price</option>
+                                    <option value="hourly">Hourly Rate</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="fixedBudget" class="form-row">
+                            <div class="form-group">
+                                <label>Budget Amount (KES) *</label>
+                                <input type="number" id="budgetAmount" placeholder="50000" min="0" step="100">
+                            </div>
+                        </div>
+
+                        <div id="hourlyBudget" style="display: none;" class="form-row">
+                            <div class="form-group">
+                                <label>Minimum Hourly Rate (KES) *</label>
+                                <input type="number" id="budgetMin" placeholder="500" min="0" step="50">
+                            </div>
+                            <div class="form-group">
+                                <label>Maximum Hourly Rate (KES) *</label>
+                                <input type="number" id="budgetMax" placeholder="2000" min="0" step="50">
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Requirements -->
+                    <fieldset class="form-section">
+                        <h4>Requirements</h4>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Duration</label>
+                                <select id="duration">
+                                    <option value="">Select Duration</option>
+                                    <option value="less_than_week">&lt; 1 week</option>
+                                    <option value="1_to_4_weeks">1-4 weeks</option>
+                                    <option value="1_to_3_months">1-3 months</option>
+                                    <option value="3_to_6_months">3-6 months</option>
+                                    <option value="more_than_6_months">&gt; 6 months</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Deadline</label>
+                                <input type="datetime-local" id="deadline">
+                            </div>
+                        </div>
+
+                        <div class="form-row full">
+                            <div class="form-group">
+                                <label>Required Skills</label>
+                                <div class="add-skill-input">
+                                    <input type="text" id="skillInput" placeholder="Type a skill and press Add">
+                                    <button type="button" onclick="addSkill()">Add</button>
+                                </div>
+                                <div id="skillsContainer"></div>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Location & Visibility -->
+                    <fieldset class="form-section">
+                        <h4>Location & Visibility</h4>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="locationRequired">
+                                    Location Required
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="locationFields" style="display: none;" class="form-row">
+                            <div class="form-group">
+                                <label>City</label>
+                                <input type="text" id="locationCity" placeholder="City">
+                            </div>
+                            <div class="form-group">
+                                <label>Country</label>
+                                <input type="text" id="locationCountry" placeholder="Country">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Visibility</label>
+                                <select id="visibility">
+                                    <option value="public" selected>Public - Anyone can apply</option>
+                                    <option value="private">Private - Invite only</option>
+                                </select>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <div class="button-group">
+                        <button type="submit" class="btn-post">
+                            <i class="fas fa-plus"></i> Post Job
+                        </button>
+                        <button type="reset" class="btn-cancel">
+                            <i class="fas fa-redo"></i> Clear Form
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Manage Jobs Tab -->
+        <div id="manage" class="tab-content">
+            <div class="form-section">
+                <h3>My Posted Jobs</h3>
+                <div id="jobsList"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>KIBARUA</h4>
+                    <p>Empowering Kenya's informal workforce through technology.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="../../index.html">Home</a></li>
+                        <li><a href="../../about.html">About</a></li>
+                        <li><a href="../../contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect With Us</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Kibarua Platform. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const API_BASE_URL = 'http://localhost/Nirus%20Plt/backend/index.php';
+        let skills = [];
+
+        // Check auth on load
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!localStorage.getItem('token')) {
+                window.location.href = '../auth/login.html';
+                return;
+            }
+            loadMyJobs();
+        });
+
+        // Tab switching
+        window.switchTab = function(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            if (tabName === 'manage') {
+                loadMyJobs();
+            }
+        };
+
+        // Update budget fields based on type
+        window.updateBudgetFields = function() {
+            const type = document.getElementById('budgetType').value;
+            const fixedBudget = document.getElementById('fixedBudget');
+            const hourlyBudget = document.getElementById('hourlyBudget');
+
+            if (type === 'fixed') {
+                fixedBudget.style.display = 'grid';
+                hourlyBudget.style.display = 'none';
+            } else {
+                fixedBudget.style.display = 'none';
+                hourlyBudget.style.display = 'grid';
+            }
+        };
+
+        // Add skill
+        window.addSkill = function() {
+            const input = document.getElementById('skillInput');
+            const value = input.value.trim();
+            
+            if (value && !skills.includes(value)) {
+                skills.push(value);
+                input.value = '';
+                renderSkills();
+            }
+        };
+
+        // Remove skill
+        window.removeSkill = function(index) {
+            skills.splice(index, 1);
+            renderSkills();
+        };
+
+        // Render skills
+        function renderSkills() {
+            const container = document.getElementById('skillsContainer');
+            container.innerHTML = skills.map((skill, i) => `
+                <div class="skill-tag">
+                    ${skill}
+                    <button type="button" onclick="removeSkill(${i})">×</button>
+                </div>
+            `).join('');
+        }
+
+        // Handle form submission
+        document.getElementById('jobForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const token = localStorage.getItem('token');
+            if (!token) {
+                showError('Session expired. Please login again.');
+                return;
+            }
+
+            const budgetType = document.getElementById('budgetType').value;
+            const budgetData = {};
+
+            if (budgetType === 'fixed') {
+                budgetData.budget_amount = parseFloat(document.getElementById('budgetAmount').value);
+            } else {
+                budgetData.budget_min = parseFloat(document.getElementById('budgetMin').value);
+                budgetData.budget_max = parseFloat(document.getElementById('budgetMax').value);
+            }
+
+            const data = {
+                title: document.getElementById('jobTitle').value,
+                description: document.getElementById('jobDescription').value,
+                category: document.getElementById('jobCategory').value,
+                budget_type: budgetType,
+                experience_level: document.getElementById('experienceLevel').value,
+                duration: document.getElementById('duration').value,
+                deadline: document.getElementById('deadline').value,
+                required_skills: skills,
+                visibility: document.getElementById('visibility').value,
+                ...budgetData
+            };
+
+            if (document.getElementById('locationRequired').checked) {
+                data.location_required = true;
+                data.location_city = document.getElementById('locationCity').value;
+                data.location_country = document.getElementById('locationCountry').value;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/jobs/create?token=${token}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showSuccess('Job posted successfully!');
+                    document.getElementById('jobForm').reset();
+                    skills = [];
+                    renderSkills();
+                    setTimeout(() => {
+                        document.querySelector('[onclick="switchTab(\'manage\')"]').click();
+                    }, 1500);
+                } else {
+                    showError(result.message || 'Error posting job');
+                }
+            } catch (error) {
+                showError('Error: ' + error.message);
+            }
+        });
+
+        // Load my jobs
+        async function loadMyJobs() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) return;
+
+                const response = await fetch(`${API_BASE_URL}/api/jobs/my-jobs?token=${token}&limit=50`);
+                const data = await response.json();
+
+                const container = document.getElementById('jobsList');
+
+                if (data.success && data.data.jobs.length > 0) {
+                    container.innerHTML = data.data.jobs.map(job => `
+                        <div class="job-card">
+                            <div class="job-header">
+                                <div>
+                                    <div class="job-title">${job.title}</div>
+                                    <div class="job-meta">
+                                        <span><i class="fas fa-tag"></i> ${job.category}</span>
+                                        <span><i class="fas fa-users"></i> ${job.proposals_count || 0} proposals</span>
+                                        <span><i class="fas fa-calendar"></i> Posted ${formatDate(job.created_at)}</span>
+                                    </div>
+                                </div>
+                                <span class="job-status status-${job.status}">${job.status.replace('_', ' ').toUpperCase()}</span>
+                            </div>
+                            <div class="job-budget">KES ${formatNumber(job.budget_type === 'fixed' ? job.budget_amount : job.budget_min + '-' + job.budget_max)}</div>
+                            <div class="job-actions">
+                                <button class="btn-edit" onclick="editJob(${job.id})"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="btn-delete" onclick="deleteJob(${job.id})"><i class="fas fa-trash"></i> Delete</button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-briefcase"></i>
+                            <h3>No jobs posted yet</h3>
+                            <p>Start posting jobs to find talented workers</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading jobs:', error);
+            }
+        }
+
+        // Delete job
+        window.deleteJob = async function(jobId) {
+            if (!confirm('Are you sure you want to delete this job?')) return;
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_BASE_URL}/api/jobs/delete?id=${jobId}&token=${token}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    showSuccess('Job deleted successfully');
+                    loadMyJobs();
+                } else {
+                    showError(data.message || 'Error deleting job');
+                }
+            } catch (error) {
+                showError('Error: ' + error.message);
+            }
+        };
+
+        // Edit job
+        window.editJob = function(jobId) {
+            alert('Edit job feature coming soon!');
+        };
+
+        // Utility functions
+        function showSuccess(message) {
+            const alert = document.getElementById('successAlert');
+            alert.textContent = message;
+            alert.style.display = 'block';
+            setTimeout(() => alert.style.display = 'none', 4000);
+        }
+
+        function showError(message) {
+            const alert = document.getElementById('errorAlert');
+            alert.textContent = message;
+            alert.style.display = 'block';
+            setTimeout(() => alert.style.display = 'none', 4000);
+        }
+
+        function formatDate(date) {
+            return new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        window.logout = function() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '../auth/login.html';
+        };
+
+        // Handle location checkbox
+        document.getElementById('locationRequired').addEventListener('change', function() {
+            document.getElementById('locationFields').style.display = this.checked ? 'grid' : 'none';
+        });
+
+        // Allow Enter key to add skills
+        document.getElementById('skillInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addSkill();
+            }
+        });
+    </script>
+</body>
+</html>

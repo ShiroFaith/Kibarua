@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Jobs | Kibarua</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .search-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .search-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .search-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+        }
+
+        .search-btn {
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .search-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .suggestions-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .suggestion-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.2s;
+        }
+
+        .suggestion-item:hover {
+            background: #f8f9fa;
+        }
+
+        .suggestion-icon {
+            color: #999;
+            margin-right: 10px;
+            font-size: 12px;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+        }
+
+        .filters-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .filter-section {
+            margin-bottom: 25px;
+        }
+
+        .filter-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .filter-title {
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .filter-toggle {
+            font-size: 12px;
+            color: #667eea;
+        }
+
+        .filter-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-option input[type="checkbox"],
+        .filter-option input[type="radio"] {
+            cursor: pointer;
+        }
+
+        .filter-option label {
+            cursor: pointer;
+            font-size: 13px;
+            color: #555;
+            flex: 1;
+        }
+
+        .filter-range {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .filter-range input {
+            flex: 1;
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .results-section {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .results-count {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .sort-by {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .sort-by select {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 13px;
+        }
+
+        .job-card {
+            background: white;
+            border: 1px solid #eee;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .job-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+
+        .job-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+
+        .job-card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #333;
+            flex: 1;
+        }
+
+        .job-card-meta {
+            display: flex;
+            gap: 15px;
+            margin: 12px 0;
+            flex-wrap: wrap;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .meta-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: #f0f0f0;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .job-card-description {
+            color: #555;
+            line-height: 1.5;
+            margin: 12px 0;
+            font-size: 13px;
+            max-height: 80px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+
+        .job-card-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 12px 0;
+        }
+
+        .skill-chip {
+            background: #ecefff;
+            color: #667eea;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .job-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .budget-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            background: white;
+            color: #333;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .btn-small:hover {
+            background: #f8f8f8;
+            border-color: #667eea;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 30px;
+            padding: 20px 0;
+        }
+
+        .page-btn {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .page-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .page-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state i {
+            font-size: 60px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading i {
+            font-size: 40px;
+            animation: spin 2s linear infinite;
+            color: #667eea;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .saved-searches {
+            background: #ecefff;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+
+        .saved-searches strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .saved-search-item {
+            display: inline-block;
+            background: white;
+            padding: 4px 10px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            border-radius: 3px;
+            cursor: pointer;
+            border: 1px solid #667eea;
+            color: #667eea;
+            transition: all 0.2s;
+        }
+
+        .saved-search-item:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+
+        .alert.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters-panel {
+                position: static;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .job-card-header {
+                flex-direction: column;
+            }
+
+            .job-card-footer {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .action-buttons {
+                width: 100%;
+            }
+
+            .search-header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="logo"><h2>KIBARUA</h2></div>
+        <div class="nav-links">
+            <a href="../../index.html">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="#" class="btn-primary" onclick="logout()" style="color: white;">Logout</a>
+        </div>
+    </nav>
+
+    <main class="search-container">
+        <div class="search-header">
+            <h1>Find Your Perfect Job</h1>
+            <p>Search from thousands of opportunities</p>
+        </div>
+
+        <div class="alert error" id="errorAlert"></div>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search jobs by title, skills, or category..." autocomplete="off">
+            <button class="search-btn" onclick="performSearch()">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </div>
+
+        <div id="suggestionsContainer" class="suggestions-dropdown"></div>
+
+        <div class="main-grid">
+            <!-- Filters Panel -->
+            <div class="filters-panel">
+                <div id="savedSearches"></div>
+
+                <div class="filter-section">
+                    <div class="filter-title">
+                        <span>Search Type</span>
+                    </div>
+                    <div class="filter-options">
+                        <div class="filter-option">
+                            <input type="radio" id="typeJobs" name="searchType" value="jobs" checked>
+                            <label for="typeJobs">Jobs Only</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="radio" id="typeWorkers" name="searchType" value="workers">
+                            <label for="typeWorkers">Workers Only</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="radio" id="typeGlobal" name="searchType" value="global">
+                            <label for="typeGlobal">All Results</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <div class="filter-title">Category</div>
+                    <div class="filter-options">
+                        <select id="categoryFilter" onchange="applyFilters()" style="width: 100%; padding: 8px;">
+                            <option value="">All Categories</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <div class="filter-title">Experience Level</div>
+                    <div class="filter-options">
+                        <div class="filter-option">
+                            <input type="checkbox" id="entryLevel" value="entry" onchange="applyFilters()">
+                            <label for="entryLevel">Entry Level</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="intermediateLevel" value="intermediate" onchange="applyFilters()">
+                            <label for="intermediateLevel">Intermediate</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="expertLevel" value="expert" onchange="applyFilters()">
+                            <label for="expertLevel">Expert</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <div class="filter-title">Budget Range</div>
+                    <div class="filter-range">
+                        <input type="number" id="budgetMin" placeholder="Min" onchange="applyFilters()">
+                        <span>-</span>
+                        <input type="number" id="budgetMax" placeholder="Max" onchange="applyFilters()">
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <div class="filter-title">Budget Type</div>
+                    <div class="filter-options">
+                        <div class="filter-option">
+                            <input type="checkbox" id="fixedBudget" value="fixed" onchange="applyFilters()">
+                            <label for="fixedBudget">Fixed Price</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="hourlyBudget" value="hourly" onchange="applyFilters()">
+                            <label for="hourlyBudget">Hourly Rate</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <div class="filter-title">Duration</div>
+                    <div class="filter-options">
+                        <select id="durationFilter" onchange="applyFilters()" style="width: 100%; padding: 8px;">
+                            <option value="">All Durations</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <div class="filter-title">Location</div>
+                    <div class="filter-options">
+                        <select id="locationFilter" onchange="applyFilters()" style="width: 100%; padding: 8px;">
+                            <option value="">All Locations</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <div class="filter-title">Special</div>
+                    <div class="filter-options">
+                        <div class="filter-option">
+                            <input type="checkbox" id="remoteOnly" value="true" onchange="applyFilters()">
+                            <label for="remoteOnly">Remote Only</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="highRating" value="true" onchange="applyFilters()">
+                            <label for="highRating">High-Rated Employers</label>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="clearFilters()" style="width: 100%; padding: 10px; background: #f0f0f0; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;">
+                    Clear Filters
+                </button>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section">
+                <div class="results-header">
+                    <span class="results-count">Loading...</span>
+                    <div class="sort-by">
+                        <label>Sort by:</label>
+                        <select id="sortBy" onchange="applyFilters()">
+                            <option value="">Newest</option>
+                            <option value="highest_budget">Highest Budget</option>
+                            <option value="lowest_budget">Lowest Budget</option>
+                            <option value="most_proposals">Most Proposals</option>
+                            <option value="best_rating">Best Rating</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="resultsContainer" class="loading">
+                    <i class="fas fa-spinner"></i> Loading jobs...
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>KIBARUA</h4>
+                    <p>Empowering Kenya's informal workforce through technology.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="../../index.html">Home</a></li>
+                        <li><a href="../../about.html">About</a></li>
+                        <li><a href="../../contact.html">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const API_BASE_URL = 'http://localhost/Nirus%20Plt/backend/index.php';
+        let allJobs = [];
+        let currentPage = 1;
+        let totalResults = 0;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFilterOptions();
+            loadSavedSearches();
+            setupSearchInput();
+        });
+
+        // Load filter dropdown options
+        async function loadFilterOptions() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_BASE_URL}/api/search/filters${token ? '?token=' + token : ''}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    const filters = data.data;
+
+                    // Populate category
+                    const categorySelect = document.getElementById('categoryFilter');
+                    filters.categories.forEach(cat => {
+                        categorySelect.innerHTML += `<option value="${cat}">${cat}</option>`;
+                    });
+
+                    // Populate duration
+                    const durationSelect = document.getElementById('durationFilter');
+                    filters.durations.forEach(dur => {
+                        durationSelect.innerHTML += `<option value="${dur}">${dur}</option>`;
+                    });
+
+                    // Populate location
+                    const locationSelect = document.getElementById('locationFilter');
+                    filters.locations.forEach(loc => {
+                        locationSelect.innerHTML += `<option value="${loc}">${loc}</option>`;
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading filters:', error);
+            }
+        }
+
+        // Setup search input with suggestions
+        function setupSearchInput() {
+            const input = document.getElementById('searchInput');
+            
+            input.addEventListener('input', debounce(async (e) => {
+                const query = e.target.value.trim();
+                
+                if (query.length < 2) {
+                    document.getElementById('suggestionsContainer').style.display = 'none';
+                    return;
+                }
+
+                try {
+                    const token = localStorage.getItem('token');
+                    const response = await fetch(`${API_BASE_URL}/api/search/suggestions?q=${encodeURIComponent(query)}&limit=8${token ? '&token=' + token : ''}`);
+                    const data = await response.json();
+
+                    if (data.success && data.data.length > 0) {
+                        displaySuggestions(data.data);
+                        document.getElementById('suggestionsContainer').style.display = 'block';
+                    } else {
+                        document.getElementById('suggestionsContainer').style.display = 'none';
+                    }
+                } catch (error) {
+                    console.error('Error loading suggestions:', error);
+                }
+            }, 300));
+
+            // Close suggestions on click outside
+            document.addEventListener('click', (e) => {
+                if (e.target !== input && e.target.closest('.suggestions-dropdown') === null) {
+                    document.getElementById('suggestionsContainer').style.display = 'none';
+                }
+            });
+        }
+
+        // Display suggestions
+        function displaySuggestions(suggestions) {
+            const container = document.getElementById('suggestionsContainer');
+            container.innerHTML = suggestions.map(s => `
+                <div class="suggestion-item" onclick="selectSuggestion('${s.suggestion}')">
+                    <i class="fas ${s.type === 'job' ? 'fa-briefcase' : 'fa-user'} suggestion-icon"></i>
+                    <strong>${s.suggestion}</strong> <span style="color: #999; font-size: 11px;">${s.popularity} searches</span>
+                </div>
+            `).join('');
+        }
+
+        // Select suggestion
+        function selectSuggestion(query) {
+            document.getElementById('searchInput').value = query;
+            document.getElementById('suggestionsContainer').style.display = 'none';
+            performSearch();
+        }
+
+        // Perform search
+        async function performSearch() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) {
+                showError('Please enter a search query');
+                return;
+            }
+
+            currentPage = 1;
+            const filters = getAppliedFilters();
+            await fetchResults(query, filters);
+        }
+
+        // Get applied filters
+        function getAppliedFilters() {
+            const filters = {};
+            
+            if (document.getElementById('categoryFilter').value) {
+                filters.category = document.getElementById('categoryFilter').value;
+            }
+            if (document.getElementById('durationFilter').value) {
+                filters.duration = document.getElementById('durationFilter').value;
+            }
+            if (document.getElementById('locationFilter').value) {
+                filters.location = document.getElementById('locationFilter').value;
+            }
+            if (document.getElementById('budgetMin').value) {
+                filters.budget_min = document.getElementById('budgetMin').value;
+            }
+            if (document.getElementById('budgetMax').value) {
+                filters.budget_max = document.getElementById('budgetMax').value;
+            }
+            if (document.getElementById('sortBy').value) {
+                filters.sort_by = document.getElementById('sortBy').value;
+            }
+            if (document.getElementById('remoteOnly').checked) {
+                filters.remote_only = true;
+            }
+            if (document.getElementById('highRating').checked) {
+                filters.min_rating = 4;
+            }
+
+            // Experience levels
+            const expLevels = [];
+            if (document.getElementById('entryLevel').checked) expLevels.push('entry');
+            if (document.getElementById('intermediateLevel').checked) expLevels.push('intermediate');
+            if (document.getElementById('expertLevel').checked) expLevels.push('expert');
+            if (expLevels.length > 0) filters.experience_level = expLevels.join(',');
+
+            // Budget types
+            const budgetTypes = [];
+            if (document.getElementById('fixedBudget').checked) budgetTypes.push('fixed');
+            if (document.getElementById('hourlyBudget').checked) budgetTypes.push('hourly');
+            if (budgetTypes.length > 0) filters.budget_type = budgetTypes.join(',');
+
+            return filters;
+        }
+
+        // Fetch results
+        async function fetchResults(query, filters) {
+            try {
+                const container = document.getElementById('resultsContainer');
+                container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Searching...</div>';
+
+                const token = localStorage.getItem('token');
+                const searchType = document.querySelector('input[name="searchType"]:checked').value;
+                
+                let url = `${API_BASE_URL}/api/search/${searchType}?q=${encodeURIComponent(query)}&page=${currentPage}&limit=20`;
+                
+                // Add filters to URL
+                Object.keys(filters).forEach(key => {
+                    url += `&${key}=${encodeURIComponent(filters[key])}`;
+                });
+
+                if (token) url += `&token=${token}`;
+
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.success) {
+                    displayResults(data.data);
+                    saveSearchQuery(query);
+                } else {
+                    container.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><h3>No results found</h3><p>${data.message}</p></div>`;
+                }
+            } catch (error) {
+                showError('Error searching: ' + error.message);
+            }
+        }
+
+        // Display results
+        function displayResults(data) {
+            const container = document.getElementById('resultsContainer');
+            const countSpan = document.querySelector('.results-count');
+
+            if (data.jobs_total !== undefined) {
+                // Global search results
+                countSpan.textContent = `Found ${data.jobs_total + data.workers_total} results`;
+                // Display implementation for combined results...
+            } else if (data.total !== undefined) {
+                // Jobs or workers search
+                countSpan.textContent = `Found ${data.total} results`;
+                totalResults = data.total;
+                allJobs = data.jobs || data.workers || [];
+
+                if (allJobs.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-search"></i>
+                            <h3>No results found</h3>
+                            <p>Try adjusting your filters or search terms</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const searchType = document.querySelector('input[name="searchType"]:checked').value;
+                container.innerHTML = allJobs.map(item => 
+                    searchType === 'workers' ? renderWorkerCard(item) : renderJobCard(item)
+                ).join('');
+
+                // Add pagination if needed
+                if (data.total_pages > 1) {
+                    let paginationHTML = '<div class="pagination">';
+                    for (let i = 1; i <= Math.min(data.total_pages, 5); i++) {
+                        paginationHTML += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">Page ${i}</button>`;
+                    }
+                    paginationHTML += '</div>';
+                    container.innerHTML += paginationHTML;
+                }
+            }
+        }
+
+        // Render job card
+        function renderJobCard(job) {
+            return `
+                <div class="job-card">
+                    <div class="job-card-header">
+                        <div>
+                            <div class="job-card-title">${job.title}</div>
+                            <div style="font-size: 13px; color: #999;">${job.employer_name || 'Anonymous'}</div>
+                        </div>
+                        <button class="btn-small" onclick="saveJob(${job.id})"><i class="fas fa-bookmark"></i> Save</button>
+                    </div>
+                    
+                    <div class="job-card-meta">
+                        <div class="meta-badge"><i class="fas fa-briefcase"></i> ${job.category}</div>
+                        <div class="meta-badge"><i class="fas fa-calendar"></i> ${job.duration}</div>
+                        <div class="meta-badge"><i class="fas fa-chart-bar"></i> ${job.experience_level}</div>
+                        ${job.remote_allowed ? '<div class="meta-badge"><i class="fas fa-globe"></i> Remote</div>' : ''}
+                    </div>
+
+                    <div class="job-card-description">${job.description}</div>
+
+                    ${job.required_skills && job.required_skills.length > 0 ? `
+                        <div class="job-card-skills">
+                            ${job.required_skills.map(skill => `<span class="skill-chip">${skill}</span>`).join('')}
+                        </div>
+                    ` : ''}
+
+                    <div class="job-card-footer">
+                        <div class="budget-badge">KES ${formatNumber(job.budget_type === 'fixed' ? job.budget_amount : job.budget_min)}</div>
+                        <div class="action-buttons">
+                            <button class="btn-small" onclick="viewJobDetails(${job.id})">View Details</button>
+                            <button class="btn-small" style="background: #667eea; color: white; border-color: #667eea;" onclick="applyForJob(${job.id})">Apply Now</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render worker card
+        function renderWorkerCard(worker) {
+            return `
+                <div class="job-card">
+                    <div class="job-card-header">
+                        <div>
+                            <div class="job-card-title">${worker.name}</div>
+                            <div style="font-size: 13px; color: #999;">${worker.professional_title || 'Professional'}</div>
+                        </div>
+                        <button class="btn-small">Contact</button>
+                    </div>
+                    
+                    <div class="job-card-meta">
+                        ${worker.experience_level ? `<div class="meta-badge"><i class="fas fa-chart-bar"></i> ${worker.experience_level}</div>` : ''}
+                        ${worker.avg_rating ? `<div class="meta-badge"><i class="fas fa-star"></i> ${worker.avg_rating}/5 (${worker.total_reviews})</div>` : ''}
+                        ${worker.open_to_remote ? '<div class="meta-badge"><i class="fas fa-globe"></i> Remote</div>' : ''}
+                    </div>
+
+                    <div class="job-card-description">${worker.bio}</div>
+
+                    ${worker.skills && worker.skills.length > 0 ? `
+                        <div class="job-card-skills">
+                            ${worker.skills.map(skill => `<span class="skill-chip">${skill}</span>`).join('')}
+                        </div>
+                    ` : ''}
+
+                    <div class="job-card-footer">
+                        <div class="budget-badge">KES ${worker.hourly_rate}/hr</div>
+                        <div class="action-buttons">
+                            <button class="btn-small" onclick="viewWorkerProfile(${worker.id})">View Profile</button>
+                            <button class="btn-small" style="background: #667eea; color: white; border-color: #667eea;">Hire Now</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Apply filters
+        function applyFilters() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) {
+                showError('Please enter a search query first');
+                return;
+            }
+            performSearch();
+        }
+
+        // Clear filters
+        function clearFilters() {
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('durationFilter').value = '';
+            document.getElementById('locationFilter').value = '';
+            document.getElementById('budgetMin').value = '';
+            document.getElementById('budgetMax').value = '';
+            document.getElementById('sortBy').value = '';
+            document.getElementById('remoteOnly').checked = false;
+            document.getElementById('highRating').checked = false;
+            document.getElementById('entryLevel').checked = false;
+            document.getElementById('intermediateLevel').checked = false;
+            document.getElementById('expertLevel').checked = false;
+            document.getElementById('fixedBudget').checked = false;
+            document.getElementById('hourlyBudget').checked = false;
+            performSearch();
+        }
+
+        // Load saved searches
+        function loadSavedSearches() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+
+            // This would be populated by fetching saved searches from API
+            const container = document.getElementById('savedSearches');
+            container.innerHTML = '';
+        }
+
+        // Save search query for trending
+        function saveSearchQuery(query) {
+            // Analytics tracking
+            const token = localStorage.getItem('token');
+            // Store in localStorage for quick recent searches
+            const recent = JSON.parse(localStorage.getItem('recentSearches') || '[]');
+            recent.unshift(query);
+            localStorage.setItem('recentSearches', JSON.stringify(recent.slice(0, 10)));
+        }
+
+        // View job details
+        function viewJobDetails(jobId) {
+            const token = localStorage.getItem('token');
+            window.location.href = `job-details.html?id=${jobId}`;
+        }
+
+        // Apply for job
+        async function applyForJob(jobId) {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '../auth/login.html';
+                return;
+            }
+            // To be implemented with job proposals feature
+            alert('Job proposal feature coming soon');
+        }
+
+        // View worker profile
+        function viewWorkerProfile(workerId) {
+            window.location.href = `worker-profile-view.html?id=${workerId}`;
+        }
+
+        // Save job
+        async function saveJob(jobId) {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                showError('Please login to save jobs');
+                return;
+            }
+            alert('Save job feature coming soon');
+        }
+
+        // Go to page
+        async function goToPage(page) {
+            currentPage = page;
+            const query = document.getElementById('searchInput').value.trim();
+            const filters = getAppliedFilters();
+            await fetchResults(query, filters);
+            window.scrollTo(0, 0);
+        }
+
+        // Utility functions
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function showError(message) {
+            const alert = document.getElementById('errorAlert');
+            alert.textContent = message;
+            alert.style.display = 'block';
+            setTimeout(() => alert.style.display = 'none', 4000);
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '../auth/login.html';
+        }
+    </script>
+</body>
+</html>

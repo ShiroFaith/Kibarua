@@ -1,0 +1,70 @@
+<!-- Search and Navigation Section in Dashboard -->
+<div class="dashboard-section">
+    <h2>Quick Access</h2>
+    <div class="quick-links">
+        <a href="search.html" class="quick-link-card">
+            <i class="fas fa-search"></i>
+            <h3>Search Jobs</h3>
+            <p>Find jobs with advanced filters and suggestions</p>
+        </a>
+        <a href="recommendations.html" class="quick-link-card">
+            <i class="fas fa-star"></i>
+            <h3>Recommended Jobs</h3>
+            <p>AI-powered job matches based on your profile</p>
+        </a>
+        <a href="post-job.html" class="quick-link-card">
+            <i class="fas fa-briefcase"></i>
+            <h3>Post a Job</h3>
+            <p>Hire skilled workers for your projects</p>
+        </a>
+        <a href="worker-profile.html" class="quick-link-card">
+            <i class="fas fa-user-tie"></i>
+            <h3>My Profile</h3>
+            <p>Update your worker profile and showcase skills</p>
+        </a>
+    </div>
+</div>
+
+<style>
+.dashboard-section {
+    margin-bottom: 30px;
+}
+
+.quick-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.quick-link-card {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    color: #333;
+    transition: all 0.3s;
+}
+
+.quick-link-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.quick-link-card i {
+    font-size: 40px;
+    color: #667eea;
+    margin-bottom: 15px;
+}
+
+.quick-link-card h3 {
+    margin: 10px 0;
+    color: #333;
+}
+
+.quick-link-card p {
+    font-size: 13px;
+    color: #999;
+}
+</style>

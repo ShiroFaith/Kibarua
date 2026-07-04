@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payments & Billing - Nirus Plt</title>
+    <link rel="stylesheet" href="/Nirus%20Plt/assets/css/style.css">
+    <style>
+        :root {
+            --primary: #007bff;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --info: #17a2b8;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --gray: #6c757d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+
+        .navbar {
+            background: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .navbar h1 {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .tab-btn {
+            padding: 0.6rem 1.2rem;
+            border: 2px solid transparent;
+            background: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--gray);
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-btn:hover {
+            color: var(--primary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Wallet Section */
+        .wallet-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .wallet-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--primary);
+        }
+
+        .wallet-card.earned {
+            border-left-color: var(--success);
+        }
+
+        .wallet-card.spent {
+            border-left-color: var(--danger);
+        }
+
+        .wallet-card.refunded {
+            border-left-color: var(--warning);
+        }
+
+        .wallet-card h3 {
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .wallet-card .amount {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        .wallet-card .currency {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        /* Payment Methods */
+        .section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1rem;
+        }
+
+        .section h2 {
+            font-size: 1.3rem;
+            color: var(--dark);
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        .payment-method-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            background: #fafbfc;
+        }
+
+        .method-info {
+            flex: 1;
+        }
+
+        .method-type {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .method-detail {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        .method-default {
+            background: var(--success);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-left: 1rem;
+        }
+
+        .method-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Transactions Table */
+        .transactions-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+
+        .transactions-table thead {
+            background: var(--light);
+        }
+
+        .transactions-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark);
+            border-bottom: 2px solid #ddd;
+        }
+
+        .transactions-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .transactions-table tbody tr:hover {
+            background: var(--light);
+        }
+
+        .transaction-amount {
+            font-weight: 600;
+        }
+
+        .amount-positive {
+            color: var(--success);
+        }
+
+        .amount-negative {
+            color: var(--danger);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-failed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--gray);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .pagination button,
+        .pagination span {
+            padding: 0.5rem 0.8rem;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .pagination button:hover {
+            background: var(--light);
+        }
+
+        .pagination button.active,
+        .pagination span {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1rem;
+        }
+
+        .modal-header h2 {
+            font-size: 1.3rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray);
+        }
+
+        .spinner {
+            border: 4px solid var(--light);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .wallet-overview {
+                grid-template-columns: 1fr;
+            }
+
+            .transactions-table {
+                font-size: 0.9rem;
+            }
+
+            .transactions-table th,
+            .transactions-table td {
+                padding: 0.75rem 0.5rem;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 50% auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>Payments & Billing</h1>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('wallet')">Wallet</button>
+            <button class="tab-btn" onclick="switchTab('methods')">Payment Methods</button>
+            <button class="tab-btn" onclick="switchTab('transactions')">Transactions</button>
+            <button class="tab-btn" onclick="switchTab('invoices')">Invoices</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Messages -->
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+
+        <!-- Wallet Tab -->
+        <div id="wallet" class="tab-content active">
+            <div class="wallet-overview" id="walletCards"></div>
+
+            <div class="section">
+                <div class="section-header">
+                    <h2>Quick Actions</h2>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    <button class="btn btn-primary" onclick="openWithdrawModal()">Request Withdrawal</button>
+                    <button class="btn btn-secondary" onclick="switchTab('methods')">Add Payment Method</button>
+                    <button class="btn btn-secondary" onclick="switchTab('transactions')">View Transactions</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Methods Tab -->
+        <div id="methods" class="tab-content">
+            <div class="section">
+                <div class="section-header">
+                    <h2>Payment Methods</h2>
+                    <button class="btn btn-primary" onclick="openAddMethodModal()">Add New Method</button>
+                </div>
+
+                <div id="methodsList"></div>
+            </div>
+        </div>
+
+        <!-- Transactions Tab -->
+        <div id="transactions" class="tab-content">
+            <div class="section">
+                <div class="section-header">
+                    <h2>Transaction History</h2>
+                </div>
+
+                <div style="margin-bottom: 1rem; display: flex; gap: 1rem;">
+                    <select id="transactionFilter" onchange="loadTransactions()">
+                        <option value="all">All Transactions</option>
+                        <option value="sent">Sent</option>
+                        <option value="received">Received</option>
+                    </select>
+                </div>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Loading transactions...</p>
+                </div>
+
+                <table class="transactions-table" id="transactionsTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionsBody"></tbody>
+                </table>
+
+                <div class="pagination" id="transactionsPagination"></div>
+            </div>
+        </div>
+
+        <!-- Invoices Tab -->
+        <div id="invoices" class="tab-content">
+            <div class="section">
+                <div class="section-header">
+                    <h2>Invoices</h2>
+                </div>
+
+                <div style="margin-bottom: 1rem; display: flex; gap: 1rem;">
+                    <select id="invoiceFilter" onchange="loadInvoices()">
+                        <option value="all">All Invoices</option>
+                        <option value="sent">Sent</option>
+                        <option value="received">Received</option>
+                    </select>
+                </div>
+
+                <div class="loading" id="invoiceLoading">
+                    <div class="spinner"></div>
+                    <p>Loading invoices...</p>
+                </div>
+
+                <table class="transactions-table" id="invoicesTable">
+                    <thead>
+                        <tr>
+                            <th>Invoice #</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="invoicesBody"></tbody>
+                </table>
+
+                <div class="pagination" id="invoicesPagination"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Payment Method Modal -->
+    <div id="addMethodModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Payment Method</h2>
+                <button class="close-btn" onclick="closeAddMethodModal()">&times;</button>
+            </div>
+
+            <form id="addMethodForm">
+                <div class="form-group">
+                    <label>Payment Method Type *</label>
+                    <select id="methodType" required>
+                        <option value="">Select type...</option>
+                        <option value="card">Credit/Debit Card</option>
+                        <option value="mobile_money">Mobile Money (M-Pesa)</option>
+                        <option value="bank_transfer">Bank Transfer</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Provider *</label>
+                    <input type="text" id="provider" placeholder="e.g., Stripe, M-Pesa" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Last 4 Digits</label>
+                    <input type="text" id="lastFour" maxlength="4" placeholder="e.g., 1234">
+                </div>
+
+                <div class="form-group">
+                    <label>Set as Default Payment Method</label>
+                    <input type="checkbox" id="isDefault">
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeAddMethodModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Method</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Withdraw Modal -->
+    <div id="withdrawModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Request Withdrawal</h2>
+                <button class="close-btn" onclick="closeWithdrawModal()">&times;</button>
+            </div>
+
+            <form id="withdrawForm">
+                <div class="form-group">
+                    <label>Amount (KES) *</label>
+                    <input type="number" id="withdrawAmount" step="0.01" min="100" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Payment Method *</label>
+                    <select id="withdrawMethod" required>
+                        <option value="">Select method...</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeWithdrawModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Request Withdrawal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/Nirus%20Plt/backend/index.php/api';
+        const TOKEN = localStorage.getItem('jwt_token');
+
+        let currentTransactionPage = 1;
+        let currentInvoicePage = 1;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadWallet();
+            loadPaymentMethods();
+
+            document.getElementById('addMethodForm').addEventListener('submit', addPaymentMethod);
+            document.getElementById('withdrawForm').addEventListener('submit', requestWithdrawal);
+
+            // Load initial tab
+            loadTransactions();
+        });
+
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event?.target?.classList?.add('active');
+
+            if (tabName === 'transactions') loadTransactions();
+            if (tabName === 'invoices') loadInvoices();
+        }
+
+        // Load wallet
+        async function loadWallet() {
+            try {
+                const response = await fetch(`${API_BASE}/payments/wallet?token=${TOKEN}`);
+                const data = await response.json();
+
+                if (!data.success) {
+                    showError('Failed to load wallet');
+                    return;
+                }
+
+                const wallet = data.data;
+                const html = `
+                    <div class="wallet-card">
+                        <h3>Available Balance</h3>
+                        <div class="amount">${formatCurrency(wallet.balance)}</div>
+                        <div class="currency">${wallet.currency}</div>
+                    </div>
+                    <div class="wallet-card earned">
+                        <h3>Total Earned</h3>
+                        <div class="amount">${formatCurrency(wallet.total_earned)}</div>
+                    </div>
+                    <div class="wallet-card spent">
+                        <h3>Total Spent</h3>
+                        <div class="amount">${formatCurrency(wallet.total_spent)}</div>
+                    </div>
+                    <div class="wallet-card refunded">
+                        <h3>Total Refunded</h3>
+                        <div class="amount">${formatCurrency(wallet.total_refunded)}</div>
+                    </div>
+                `;
+
+                document.getElementById('walletCards').innerHTML = html;
+            } catch (error) {
+                showError('Error loading wallet: ' + error.message);
+            }
+        }
+
+        // Load payment methods
+        async function loadPaymentMethods() {
+            try {
+                const response = await fetch(`${API_BASE}/payments/methods?token=${TOKEN}`);
+                const data = await response.json();
+
+                const methods = data.data || [];
+                let html = '';
+
+                if (methods.length === 0) {
+                    html = '<div class="empty-state"><div class="empty-state-icon">💳</div><p>No payment methods added</p></div>';
+                } else {
+                    methods.forEach(method => {
+                        const methodDisplay = `${method.method_type.replace('_', ' ')} - ${method.provider} ****${method.last_four}`;
+                        html += `
+                            <div class="payment-method-card">
+                                <div class="method-info">
+                                    <div class="method-type">${methodDisplay}</div>
+                                    <div class="method-detail">${method.method_type}</div>
+                                </div>
+                                ${method.is_default === 1 ? '<span class="method-default">DEFAULT</span>' : ''}
+                            </div>
+                        `;
+                    });
+                }
+
+                document.getElementById('methodsList').innerHTML = html;
+
+                // Populate withdrawal method select
+                const selectHtml = methods.map(m => 
+                    `<option value="${m.id}">${m.provider} ****${m.last_four}</option>`
+                ).join('');
+                document.getElementById('withdrawMethod').innerHTML = '<option value="">Select method...</option>' + selectHtml;
+
+            } catch (error) {
+                showError('Error loading payment methods: ' + error.message);
+            }
+        }
+
+        // Add payment method
+        async function addPaymentMethod(e) {
+            e.preventDefault();
+
+            try {
+                const formData = {
+                    method_type: document.getElementById('methodType').value,
+                    provider: document.getElementById('provider').value,
+                    last_four: document.getElementById('lastFour').value,
+                    is_default: document.getElementById('isDefault').checked
+                };
+
+                const response = await fetch(`${API_BASE}/payments/method/add?token=${TOKEN}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showSuccess('Payment method added successfully');
+                    closeAddMethodModal();
+                    loadPaymentMethods();
+                } else {
+                    showError(data.message);
+                }
+            } catch (error) {
+                showError('Error: ' + error.message);
+            }
+        }
+
+        // Load transactions
+        async function loadTransactions() {
+            try {
+                showTransactionLoading(true);
+
+                const type = document.getElementById('transactionFilter').value;
+                const response = await fetch(
+                    `${API_BASE}/payments/transactions?type=${type}&page=${currentTransactionPage}&limit=10&token=${TOKEN}`
+                );
+                const data = await response.json();
+
+                showTransactionLoading(false);
+
+                if (!data.success) {
+                    showError('Failed to load transactions');
+                    return;
+                }
+
+                displayTransactions(data.data);
+                updatePagination(data.pagination, 'transactionsPagination', 'goToTransactionPage');
+            } catch (error) {
+                showTransactionLoading(false);
+                showError('Error loading transactions: ' + error.message);
+            }
+        }
+
+        // Display transactions
+        function displayTransactions(transactions) {
+            const tbody = document.getElementById('transactionsBody');
+            
+            if (transactions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem; color: var(--gray);">No transactions found</td></tr>';
+                return;
+            }
+
+            let html = '';
+            transactions.forEach(tx => {
+                const amountClass = tx.transaction_type === 'payment' || tx.transaction_type === 'spent' ? 'amount-negative' : 'amount-positive';
+                const amountSymbol = tx.transaction_type === 'payment' || tx.transaction_type === 'spent' ? '-' : '+';
+
+                html += `
+                    <tr>
+                        <td>${formatDate(tx.created_at)}</td>
+                        <td>${tx.transaction_type}</td>
+                        <td>${tx.payer_name} → ${tx.payee_name}</td>
+                        <td class="transaction-amount ${amountClass}">${amountSymbol}${formatCurrency(tx.amount)}</td>
+                        <td><span class="status-badge status-${tx.status}">${tx.status}</span></td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        // Load invoices
+        async function loadInvoices() {
+            try {
+                showInvoiceLoading(true);
+
+                const type = document.getElementById('invoiceFilter').value;
+                const response = await fetch(
+                    `${API_BASE}/payments/invoices?type=${type}&page=${currentInvoicePage}&limit=10&token=${TOKEN}`
+                );
+                const data = await response.json();
+
+                showInvoiceLoading(false);
+
+                if (!data.success) {
+                    showError('Failed to load invoices');
+                    return;
+                }
+
+                displayInvoices(data.data);
+                updatePagination(data.pagination, 'invoicesPagination', 'goToInvoicePage');
+            } catch (error) {
+                showInvoiceLoading(false);
+                showError('Error loading invoices: ' + error.message);
+            }
+        }
+
+        // Display invoices
+        function displayInvoices(invoices) {
+            const tbody = document.getElementById('invoicesBody');
+            
+            if (invoices.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem; color: var(--gray);">No invoices found</td></tr>';
+                return;
+            }
+
+            let html = '';
+            invoices.forEach(inv => {
+                html += `
+                    <tr>
+                        <td>${inv.invoice_number}</td>
+                        <td>${formatDate(inv.issue_date)}</td>
+                        <td>${formatCurrency(inv.amount)}</td>
+                        <td><span class="status-badge status-${inv.status}">${inv.status}</span></td>
+                        <td><button class="btn btn-primary btn-small" onclick="viewInvoice(${inv.id})">View</button></td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        // View invoice
+        function viewInvoice(invoiceId) {
+            alert('Invoice detail view - would open full invoice document');
+        }
+
+        // Request withdrawal
+        async function requestWithdrawal(e) {
+            e.preventDefault();
+
+            try {
+                const formData = {
+                    amount: parseFloat(document.getElementById('withdrawAmount').value),
+                    payment_method_id: document.getElementById('withdrawMethod').value
+                };
+
+                const response = await fetch(`${API_BASE}/payments/withdraw/request?token=${TOKEN}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showSuccess('Withdrawal request submitted successfully');
+                    closeWithdrawModal();
+                    loadWallet();
+                } else {
+                    showError(data.message);
+                }
+            } catch (error) {
+                showError('Error: ' + error.message);
+            }
+        }
+
+        // Pagination
+        function updatePagination(pagination, elementId, funcName) {
+            const el = document.getElementById(elementId);
+            const totalPages = pagination.total_pages;
+            const currentPage = pagination.page;
+            let html = '';
+
+            if (currentPage > 1) {
+                html += `<button onclick="${funcName}(${currentPage - 1})">← Previous</button>`;
+            }
+
+            for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
+                html += `<button onclick="${funcName}(${i})" class="${i === currentPage ? 'active' : ''}">${i}</button>`;
+            }
+
+            if (currentPage < totalPages) {
+                html += `<button onclick="${funcName}(${currentPage + 1})">Next →</button>`;
+            }
+
+            el.innerHTML = html;
+        }
+
+        function goToTransactionPage(page) {
+            currentTransactionPage = page;
+            loadTransactions();
+        }
+
+        function goToInvoicePage(page) {
+            currentInvoicePage = page;
+            loadInvoices();
+        }
+
+        // Modal functions
+        function openAddMethodModal() {
+            document.getElementById('addMethodModal').style.display = 'block';
+        }
+
+        function closeAddMethodModal() {
+            document.getElementById('addMethodModal').style.display = 'none';
+            document.getElementById('addMethodForm').reset();
+        }
+
+        function openWithdrawModal() {
+            document.getElementById('withdrawModal').style.display = 'block';
+        }
+
+        function closeWithdrawModal() {
+            document.getElementById('withdrawModal').style.display = 'none';
+            document.getElementById('withdrawForm').reset();
+        }
+
+        window.onclick = (event) => {
+            const addMethodModal = document.getElementById('addMethodModal');
+            const withdrawModal = document.getElementById('withdrawModal');
+            if (event.target === addMethodModal) closeAddMethodModal();
+            if (event.target === withdrawModal) closeWithdrawModal();
+        };
+
+        // Utility functions
+        function showTransactionLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+
+        function showInvoiceLoading(show) {
+            document.getElementById('invoiceLoading').style.display = show ? 'block' : 'none';
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => { errorDiv.style.display = 'none'; }, 5000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            setTimeout(() => { successDiv.style.display = 'none'; }, 5000);
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-KE', {
+                style: 'currency',
+                currency: 'KES'
+            }).format(amount);
+        }
+
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+    </script>
+</body>
+</html>

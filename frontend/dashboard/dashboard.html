@@ -1,0 +1,588 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Kibarua Platform</title>
+	<link rel="stylesheet" href="../../css/style.css">
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+	<script>
+		// Initialize Supabase for this dashboard
+		const SUPABASE_URL = "https://wadjqsgwpzmxiwymqghs.supabase.co";
+		const SUPABASE_KEY = "sb_publishable_BPgHoH8Cv78ejyLY2DBLoA_LhbK7X8k";
+		const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+		// Logout Function - Define early so onclick handlers can find it
+		async function logout() {
+			await supabase.auth.signOut();
+			window.location.href = "../../index.html";
+		}
+
+		// Sidebar Toggle Functions  
+		function toggleSidebar() {
+			const sidebar = document.querySelector('.sidebar');
+			const overlay = document.querySelector('.sidebar-overlay');
+			sidebar.classList.toggle('active');
+			overlay.classList.toggle('active');
+		}
+		
+		function closeSidebar() {
+			const sidebar = document.querySelector('.sidebar');
+			const overlay = document.querySelector('.sidebar-overlay');
+			sidebar.classList.remove('active');
+			overlay.classList.remove('active');
+		}
+	</script>
+</head>
+<body class="dashboard-body">
+	<nav class="nav-bar">
+    	<div class="nav-left">
+    		<button class="sidebar-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    		<div class="logo"><h2>KIBARUA</h2></div>
+    	</div>
+    	<div class="nav-links">
+        	<span id="user-greeting" style="margin-right: 15px; font-weight: 600;"></span>
+        	<a href="#" class="btn-primary" onclick="logout()" style="color: white;">Logout</a>
+    	</div>
+	</nav>
+	
+	<!-- Sidebar -->
+	<aside class="sidebar">
+		<div class="sidebar-header">
+			<h3>Menu</h3>
+			<button class="close-sidebar" onclick="closeSidebar()"><i class="fas fa-times"></i></button>
+		</div>
+		<nav class="sidebar-nav">
+			<a href="#" class="sidebar-item active" onclick="showSection('dashboard')">
+				<i class="fas fa-home"></i> Dashboard
+			</a>
+			
+			<!-- EMPLOYEE MENU ITEMS -->
+			<div id="employee-menu">
+				<a href="#" class="sidebar-item" id="browse-jobs-link" onclick="showSection('browse-jobs')">
+					<i class="fas fa-search"></i> Browse Jobs
+				</a>
+				<a href="#" class="sidebar-item" id="my-applications-link" onclick="showSection('my-applications')">
+					<i class="fas fa-file-alt"></i> My Applications
+				</a>
+				<a href="#" class="sidebar-item" id="employee-profile-link" onclick="showSection('employee-profile')">
+					<i class="fas fa-user"></i> My Profile
+				</a>
+			</div>
+			
+			<!-- EMPLOYER MENU ITEMS -->
+			<div id="employer-menu" style="display: none;">
+				<a href="#" class="sidebar-item" id="post-job-link" onclick="showSection('post-job')">
+					<i class="fas fa-plus-circle"></i> Post a Job
+				</a>
+				<a href="#" class="sidebar-item" id="my-jobs-link" onclick="showSection('my-jobs')">
+					<i class="fas fa-briefcase"></i> My Jobs
+				</a>
+				<a href="#" class="sidebar-item" id="job-applications-link" onclick="showSection('job-applications')">
+					<i class="fas fa-inbox"></i> Applications
+				</a>
+				<a href="#" class="sidebar-item" id="employee-ratings-link" onclick="showSection('employee-ratings')">
+					<i class="fas fa-star"></i> Rate Employees
+				</a>
+				<a href="#" class="sidebar-item" id="employer-profile-link" onclick="showSection('employer-profile')">
+					<i class="fas fa-user"></i> Profile
+				</a>
+			</div>
+			
+			<a href="#" class="sidebar-item" id="settings-link" onclick="showSection('settings')">
+				<i class="fas fa-cog"></i> Settings
+			</a>
+		</nav>
+		<div class="sidebar-footer">
+			<a href="#" class="sidebar-item logout-item" onclick="logout()">
+				<i class="fas fa-sign-out-alt"></i> Logout
+			</a>
+		</div>
+	</aside>
+	
+	<!-- Sidebar Overlay for Mobile -->
+	<div class="sidebar-overlay" onclick="closeSidebar()"></div>
+ 
+	<main class="dashboard-main">
+    	<!-- Dashboard Overview Section (BOTH ROLES) -->
+    	<div id="dashboard-overview" class="dashboard-section">
+    		<h1>Welcome to Kibarua Dashboard!</h1>
+    		<div id="role-badge" style="margin-bottom: 20px; padding: 10px 15px; background: rgba(46, 204, 113, 0.1); border-left: 4px solid var(--primary-color); border-radius: 5px; display: inline-block;">
+    			<strong>Role:</strong> <span id="user-role-display">Loading...</span>
+    		</div>
+    		<div class="dashboard-cards">
+    			<div class="stat-card">
+    				<i class="fas fa-briefcase"></i>
+    				<h3>Active Jobs</h3>
+    				<p class="stat-number" id="active-jobs-count">0</p>
+    			</div>
+    			<div class="stat-card">
+    				<i class="fas fa-check-circle"></i>
+    				<h3>Completed</h3>
+    				<p class="stat-number" id="completed-count">0</p>
+    			</div>
+    			<div class="stat-card">
+    				<i class="fas fa-star"></i>
+    				<h3>Rating</h3>
+    				<p class="stat-number" id="rating-count">5.0</p>
+    			</div>
+    			<div class="stat-card">
+    				<i class="fas fa-wallet"></i>
+    				<h3>Earnings</h3>
+    				<p class="stat-number" id="earnings-count">Ksh 0</p>
+    			</div>
+    		</div>
+    	</div>
+    	
+    	<!-- ========== EMPLOYEE SECTIONS ========== -->
+    	
+    	<!-- Browse Jobs Section (EMPLOYEE) -->
+    	<section id="browse-jobs-section" class="dashboard-section" style="display: none;">
+    		<h2>Available Jobs Near You</h2>
+    		<div class="filters-bar">
+    			<input type="text" id="search-jobs" placeholder="Search by job title..." class="search-input">
+    			<select id="filter-location" class="filter-select">
+    				<option value="">All Locations</option>
+    				<option value="Nairobi">Nairobi</option>
+    				<option value="Mombasa">Mombasa</option>
+    				<option value="Kisumu">Kisumu</option>
+    			</select>
+    		</div>
+    		<div id="job-list" class="job-grid">
+                <p style="text-align: center; padding: 40px;">Loading available jobs...</p>
+            </div>
+        </section>
+        
+        <!-- My Applications Section (EMPLOYEE) -->
+        <section id="my-applications-section" class="dashboard-section" style="display: none;">
+        	<h2>My Job Applications</h2>
+        	<div id="my-applications" class="applications-list">
+                <p style="text-align: center; padding: 40px;">No applications yet. Browse available jobs to apply.</p>
+            </div>
+        </section>
+        
+        <!-- Employee Profile Section -->
+        <section id="employee-profile-section" class="dashboard-section" style="display: none;">
+        	<h2>My Profile</h2>
+        	<div class="glass-card">
+        		<div class="profile-container">
+        			<div class="profile-header">
+        				<div class="profile-avatar-large">
+        					<i class="fas fa-user-circle" style="font-size: 100px; color: var(--primary-color);"></i>
+        					<input type="file" id="employee-avatar" style="display: none;">
+        					<button class="btn-primary" onclick="document.getElementById('employee-avatar').click()" style="margin-top: 10px;">Change Photo</button>
+        				</div>
+        				<div class="profile-header-info">
+        					<h3 id="emp-profile-name">Loading...</h3>
+        					<p id="emp-profile-email">Loading...</p>
+        					<p id="emp-profile-rating">Rating: <span id="emp-rating-value">5.0</span> ⭐</p>
+        				</div>
+        			</div>
+        			<div style="margin-top: 30px;">
+        				<h4>Professional Summary</h4>
+        				<textarea id="emp-bio" placeholder="Tell employers about yourself..." class="form-control" rows="4"></textarea>
+        				
+        				<h4 style="margin-top: 20px;">Skills</h4>
+        				<input type="text" id="emp-skills" placeholder="e.g., Plumbing, Painting, Carpentry" class="form-control">
+        				
+        				<h4 style="margin-top: 20px;">Experience (Years)</h4>
+        				<input type="number" id="emp-experience" placeholder="Years of experience" class="form-control">
+        				
+        				<h4 style="margin-top: 20px;">Hourly Rate (Ksh)</h4>
+        				<input type="number" id="emp-rate" placeholder="Expected hourly rate" class="form-control">
+        				
+        				<button class="btn-primary" onclick="saveEmployeeProfile()" style="margin-top: 20px;">Save Profile</button>
+        			</div>
+        		</div>
+        	</div>
+        </section>
+        
+        <!-- ========== EMPLOYER SECTIONS ========== -->
+        
+        <!-- Post a Job Section (EMPLOYER) -->
+        <section id="post-job-section" class="dashboard-section" style="display: none;">
+        	<h2>Post a New Job</h2>
+        	<div class="glass-card">
+                <div class="job-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Job Title</label>
+                            <input type="text" id="job-title" placeholder="e.g., House Painting">
+                        </div>
+                        <div class="form-group">
+                            <label>Location</label>
+                            <input type="text" id="job-location" placeholder="e.g., Mombasa CBD">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Budget (Ksh)</label>
+                            <input type="number" id="job-pay" placeholder="Budget for this job">
+                        </div>
+                        <div class="form-group">
+                            <label>Job Duration</label>
+                            <select id="job-duration" class="form-control">
+                                <option value="one-time">One-time Job</option>
+                                <option value="hourly">Hourly</option>
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Job Description</label>
+                        <textarea id="job-desc" placeholder="Describe the work in detail..." class="form-control" rows="5"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Required Skills</label>
+                        <input type="text" id="job-skills" placeholder="e.g., Plumbing, Carpentry">
+                    </div>
+                    
+                    <button class="btn-primary" onclick="postJob()">Post Job</button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- My Jobs Section (EMPLOYER) -->
+        <section id="my-jobs-section" class="dashboard-section" style="display: none;">
+        	<h2>My Posted Jobs</h2>
+        	<div id="employer-jobs" class="jobs-list">
+                <p style="text-align: center; padding: 40px;">No jobs posted yet. <a href="#" onclick="showSection('post-job')" style="color: var(--primary-color); font-weight: 600;">Post your first job</a></p>
+            </div>
+        </section>
+        
+        <!-- Job Applications Section (EMPLOYER) -->
+        <section id="job-applications-section" class="dashboard-section" style="display: none;">
+        	<h2>Job Applications</h2>
+        	<div id="applications-list" class="applications-list">
+                <p style="text-align: center; padding: 40px;">No applications received yet.</p>
+            </div>
+        </section>
+        
+        <!-- Rate Employees Section (EMPLOYER) -->
+        <section id="employee-ratings-section" class="dashboard-section" style="display: none;">
+        	<h2>Rate Employees</h2>
+        	<div id="completed-jobs" class="completed-jobs-list">
+                <p style="text-align: center; padding: 40px;">No completed jobs to rate yet.</p>
+            </div>
+        </section>
+        
+        <!-- Employer Profile Section -->
+        <section id="employer-profile-section" class="dashboard-section" style="display: none;">
+        	<h2>Business Profile</h2>
+        	<div class="glass-card">
+        		<div class="profile-container">
+        			<div class="profile-header">
+        				<div class="profile-avatar-large">
+        					<i class="fas fa-building" style="font-size: 100px; color: var(--primary-color);"></i>
+        					<button class="btn-primary" style="margin-top: 10px;">Upload Logo</button>
+        				</div>
+        				<div class="profile-header-info">
+        					<h3 id="emp-company-name">Company Name</h3>
+        					<p id="emp-company-email">company@email.com</p>
+        					<p id="emp-reputation">Reputation: <span id="emp-rep-score">0</span> jobs completed</p>
+        				</div>
+        			</div>
+        			<div style="margin-top: 30px;">
+        				<h4>Company Name</h4>
+        				<input type="text" id="company-name" placeholder="Your company name" class="form-control">
+        				
+        				<h4 style="margin-top: 20px;">Company Description</h4>
+        				<textarea id="company-desc" placeholder="Tell workers about your company..." class="form-control" rows="4"></textarea>
+        				
+        				<h4 style="margin-top: 20px;">Contact Phone</h4>
+        				<input type="tel" id="company-phone" placeholder="+254..." class="form-control">
+        				
+        				<h4 style="margin-top: 20px;">Business Type</h4>
+        				<input type="text" id="company-type" placeholder="e.g., Construction, Cleaning, Home Services" class="form-control">
+        				
+        				<button class="btn-primary" onclick="saveEmployerProfile()" style="margin-top: 20px;">Save Profile</button>
+        			</div>
+        		</div>
+        	</div>
+        </section>
+        
+        <!-- Settings Section (BOTH ROLES) -->
+        <section id="settings-section" class="dashboard-section" style="display: none;">
+        	<h2>Settings</h2>
+        	<div class="glass-card">
+        		<h3>Account Settings</h3>
+        		<div class="settings-group">
+        			<label>Notification Preferences</label>
+        			<div class="checkbox-group">
+        				<label><input type="checkbox" checked> Email Notifications</label>
+        				<label><input type="checkbox" checked> SMS Notifications</label>
+        				<label><input type="checkbox"> Push Notifications</label>
+        			</div>
+        		</div>
+        		
+        		<h3 style="margin-top: 30px;">Change Password</h3>
+        		<div class="settings-group">
+        			<div class="form-group">
+        				<label>Current Password</label>
+        				<input type="password" id="current-password" class="form-control" placeholder="Enter current password">
+        			</div>
+        			<div class="form-group">
+        				<label>New Password</label>
+        				<input type="password" id="new-password" class="form-control" placeholder="Enter new password">
+        			</div>
+        			<button class="btn-primary" onclick="changePassword()">Update Password</button>
+        		</div>
+        	</div>
+        </section>
+	</main>
+ 
+	<script src="../../js/main.js"></script>
+	<script>
+		let currentUserRole = null;
+
+		// Load Dashboard Data
+		function loadDashboardData(user) {
+			// Update user greeting
+			const greeting = document.getElementById('user-greeting');
+			const userName = user?.user_metadata?.full_name || 'User';
+			greeting.textContent = `Welcome, ${userName}!`;
+			
+			// Note: Additional dashboard data loading can be added here
+			// such as fetching jobs, applications, etc.
+		}		
+		// Initialize Role-Based Menu
+		function initializeMenuByRole(role) {
+			currentUserRole = role;
+			const employeeMenu = document.getElementById('employee-menu');
+			const employerMenu = document.getElementById('employer-menu');
+			
+			if (role === 'employee') {
+				employeeMenu.style.display = 'block';
+				employerMenu.style.display = 'none';
+				document.getElementById('user-role-display').textContent = 'Job Seeker / Employee';
+			} else if (role === 'employer') {
+				employeeMenu.style.display = 'none';
+				employerMenu.style.display = 'block';
+				document.getElementById('user-role-display').textContent = 'Employer / Business Owner';
+			}
+		}
+		
+		// Section Switching with Role Awareness
+		function showSection(sectionName) {
+			(event || window.event).preventDefault();
+			closeSidebar();
+			
+			// Hide all sections
+			document.querySelectorAll('.dashboard-section').forEach(section => {
+				section.style.display = 'none';
+			});
+			
+			// Remove active class from all sidebar items
+			document.querySelectorAll('.sidebar-item').forEach(item => {
+				item.classList.remove('active');
+			});
+			
+			// Show selected section
+			switch(sectionName) {
+				case 'dashboard':
+					document.getElementById('dashboard-overview').style.display = 'block';
+					document.querySelector('.sidebar-item').classList.add('active');
+					break;
+					
+				// EMPLOYEE SECTIONS
+				case 'browse-jobs':
+					document.getElementById('browse-jobs-section').style.display = 'block';
+					document.getElementById('browse-jobs-link').classList.add('active');
+					break;
+				case 'my-applications':
+					document.getElementById('my-applications-section').style.display = 'block';
+					document.getElementById('my-applications-link').classList.add('active');
+					break;
+				case 'employee-profile':
+					document.getElementById('employee-profile-section').style.display = 'block';
+					document.getElementById('employee-profile-link').classList.add('active');
+					loadEmployeeProfile();
+					break;
+					
+				// EMPLOYER SECTIONS
+				case 'post-job':
+					document.getElementById('post-job-section').style.display = 'block';
+					document.getElementById('post-job-link').classList.add('active');
+					break;
+				case 'my-jobs':
+					document.getElementById('my-jobs-section').style.display = 'block';
+					document.getElementById('my-jobs-link').classList.add('active');
+					loadEmployerJobs();
+					break;
+				case 'job-applications':
+					document.getElementById('job-applications-section').style.display = 'block';
+					document.getElementById('job-applications-link').classList.add('active');
+					loadJobApplications();
+					break;
+				case 'employee-ratings':
+					document.getElementById('employee-ratings-section').style.display = 'block';
+					document.getElementById('employee-ratings-link').classList.add('active');
+					loadCompletedJobsForRating();
+					break;
+				case 'employer-profile':
+					document.getElementById('employer-profile-section').style.display = 'block';
+					document.getElementById('employer-profile-link').classList.add('active');
+					loadEmployerProfile();
+					break;
+					
+				// SHARED SECTIONS
+				case 'settings':
+					document.getElementById('settings-section').style.display = 'block';
+					document.getElementById('settings-link').classList.add('active');
+					break;
+			}
+		}
+		
+		// ========== EMPLOYEE FUNCTIONS ==========
+		
+		function loadEmployeeProfile() {
+			// Load from localStorage or Supabase initially
+			const profileData = JSON.parse(localStorage.getItem('employeeProfile') || '{}');
+			document.getElementById('emp-profile-name').textContent = profileData.name || 'Loading...';
+			document.getElementById('emp-profile-email').textContent = profileData.email || 'Loading...';
+			document.getElementById('emp-bio').value = profileData.bio || '';
+			document.getElementById('emp-skills').value = profileData.skills || '';
+			document.getElementById('emp-experience').value = profileData.experience || '';
+			document.getElementById('emp-rate').value = profileData.hourly_rate || '';
+		}
+		
+		function saveEmployeeProfile() {
+			const profileData = {
+				bio: document.getElementById('emp-bio').value,
+				skills: document.getElementById('emp-skills').value,
+				experience: document.getElementById('emp-experience').value,
+				hourly_rate: document.getElementById('emp-rate').value
+			};
+			localStorage.setItem('employeeProfile', JSON.stringify(profileData));
+			alert('Profile updated successfully!');
+		}
+		
+		// ========== EMPLOYER FUNCTIONS ==========
+		
+		function postJob() {
+			const jobData = {
+				title: document.getElementById('job-title').value,
+				location: document.getElementById('job-location').value,
+				budget: document.getElementById('job-pay').value,
+				duration: document.getElementById('job-duration').value,
+				description: document.getElementById('job-desc').value,
+				skills: document.getElementById('job-skills').value,
+				created_at: new Date().toISOString()
+			};
+			
+			if (!jobData.title || !jobData.location || !jobData.budget || !jobData.description) {
+				alert('Please fill in all required fields');
+				return;
+			}
+			
+			// Save to localStorage (later connect to Supabase)
+			const jobs = JSON.parse(localStorage.getItem('postedJobs') || '[]');
+			jobs.push(jobData);
+			localStorage.setItem('postedJobs', JSON.stringify(jobs));
+			
+			// Clear form
+			document.getElementById('job-title').value = '';
+			document.getElementById('job-location').value = '';
+			document.getElementById('job-pay').value = '';
+			document.getElementById('job-duration').value = 'one-time';
+			document.getElementById('job-desc').value = '';
+			document.getElementById('job-skills').value = '';
+			
+			alert('Job posted successfully!');
+		}
+		
+		function loadEmployerJobs() {
+			const jobs = JSON.parse(localStorage.getItem('postedJobs') || '[]');
+			const container = document.getElementById('employer-jobs');
+			
+			if (jobs.length === 0) {
+				container.innerHTML = '<p style="text-align: center; padding: 40px;">No jobs posted yet.</p>';
+				return;
+			}
+			
+			container.innerHTML = jobs.map((job, index) => `
+				<div class="job-card">
+					<div class="job-header">
+						<h3>${job.title}</h3>
+						<span class="job-status">Active</span>
+					</div>
+					<p><i class="fas fa-map-marker"></i> ${job.location}</p>
+					<p><i class="fas fa-money-bill"></i> Ksh ${job.budget}</p>
+					<p><strong>Duration:</strong> ${job.duration}</p>
+					<p>${job.description}</p>
+					<div class="job-actions">
+						<button class="btn-primary" onclick="editJob(${index})">Edit</button>
+						<button class="btn-secondary" onclick="deleteJob(${index})">Delete</button>
+						<button class="btn-primary" onclick="viewApplications(${index})">View Applications (0)</button>
+					</div>
+				</div>
+			`).join('');
+		}
+		
+		function loadJobApplications() {
+			// To be connected with Supabase
+			const container = document.getElementById('applications-list');
+			container.innerHTML = '<p style="text-align: center; padding: 40px;">No applications yet.</p>';
+		}
+		
+		function loadCompletedJobsForRating() {
+			// To be connected with Supabase to load completed jobs
+			const container = document.getElementById('completed-jobs');
+			container.innerHTML = '<p style="text-align: center; padding: 40px;">No completed jobs to rate yet.</p>';
+		}
+		
+		function loadEmployerProfile() {
+			const profileData = JSON.parse(localStorage.getItem('employerProfile') || '{}');
+			document.getElementById('emp-company-name').textContent = profileData.company_name || 'Company Name';
+			document.getElementById('company-name').value = profileData.company_name || '';
+			document.getElementById('company-desc').value = profileData.description || '';
+			document.getElementById('company-phone').value = profileData.phone || '';
+			document.getElementById('company-type').value = profileData.business_type || '';
+		}
+		
+		function saveEmployerProfile() {
+			const profileData = {
+				company_name: document.getElementById('company-name').value,
+				description: document.getElementById('company-desc').value,
+				phone: document.getElementById('company-phone').value,
+				business_type: document.getElementById('company-type').value
+			};
+			localStorage.setItem('employerProfile', JSON.stringify(profileData));
+			alert('Profile updated successfully!');
+		}
+		
+		function deleteJob(index) {
+			if (confirm('Are you sure you want to delete this job?')) {
+				const jobs = JSON.parse(localStorage.getItem('postedJobs') || '[]');
+				jobs.splice(index, 1);
+				localStorage.setItem('postedJobs', JSON.stringify(jobs));
+				loadEmployerJobs();
+			}
+		}
+		
+		function changePassword() {
+			alert('Password change functionality will be connected to Supabase');
+		}
+    	
+    	// Specific Dashboard logic
+        document.addEventListener('DOMContentLoaded', async () => {
+        	const user = await checkUserSession();
+        	if (!user) {
+                window.location.href = '../../index.html';
+                return;
+        	}
+        	
+        	// Determine user role and initialize menu
+        	const userRole = user.user_metadata?.role || 'employee';
+        	initializeMenuByRole(userRole);
+        	
+            loadDashboardData(user);
+    	});
+	</script>
+</body>
+</html>

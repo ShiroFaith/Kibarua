@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Kibarua Platform</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="logo"><h2>KIBARUA</h2></div>
+        <div class="nav-links">
+            <a href="../../index.html">Home</a>
+            <a href="#" class="btn-primary" onclick="window.location.href='register.html'" style="color: white;">Sign Up</a>
+        </div>
+    </nav>
+
+    <main class="auth-container">
+        <div class="auth-card glass-morphism">
+            <div class="auth-form">
+                <h2>Welcome Back</h2>
+                <p>Sign in to your account</p>
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="login-email" placeholder="example@mail.com">
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <div class="password-container">
+                        <input type="password" id="login-password" placeholder="••••••••">
+                        <i class="fa-solid fa-eye" onclick="togglePass('login-password', this)"></i>
+                    </div>
+                </div>
+                <button class="btn-primary w-100" onclick="authLogin()" style="margin-top: 20px;">Sign In</button>
+                <div style="margin-top: 20px; text-align: center;">
+                    <p style="color: #666; margin: 10px 0;">
+                        Don't have an account? <a href="register.html" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">Sign Up</a>
+                    </p>
+                    <p style="color: #999; font-size: 0.9rem; margin: 10px 0;">
+                        <a href="forgot_password.html" style="color: var(--primary-color); text-decoration: none;">Forgot Password?</a>
+                    </p>
+                </div>
+            </div>
+            <div class="auth-side-img">
+                <img src="../../images/signin.jpeg" alt="Login" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function togglePass(inputId, icon) {
+            const input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = "password";
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+    </script>
+    <script type="module" src="../../assets/js/auth-examples.js"></script>
+    <script type="module">
+        import { auth } from '../../assets/js/auth-module.js';
+        const API_BASE = "http://localhost/nirus/backend/api";
+
+
+        // Shared auth module + events
+        auth.on('loginSuccess', (detail) => {
+            window.location.href = '../dashboard/dashboard.html';
+        });
+
+        auth.on('loginError', (detail) => {
+            alert(detail.message);
+        });
+
+        window.authLogin = async function() {
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+
+            if (!email || !password) {
+                alert('Please enter both email and password.');
+                return;
+            }
+
+            // const result = await auth.login(email, password);
+            // if (!result.success) {
+            //     alert('Login Error: ' + result.message);
+            // }
+
+            try {
+                // Use form-encoded payload to avoid OPTIONS preflight from Live Server.
+                const formPayload = new URLSearchParams({
+                    email: email,
+                    password: password,
+                });
+
+                const response = await fetch(`${API_BASE}/auth/login.php`, {
+                    method: "POST",
+                    body: formPayload
+                });
+
+                const data = await response.json();
+                console.log("API Response:", data);
+
+                if (!data.success) {
+                    const errorMsg = data.errors 
+                        ? JSON.stringify(data.errors) 
+                        : (data.message || 'Unknown error occurred');
+                    alert("Login Error: " + errorMsg);
+                    console.error("Full response:", data);
+                    return;
+                }
+            } catch (error) {
+                console.error('Login Error:', error);
+                alert('An unexpected error occurred. Please try again later.');
+            }
+        };
+    </script>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>KIBARUA</h4>
+                    <p>Empowering Kenya's informal workforce through technology.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="../../index.html">Home</a></li>
+                        <li><a href="../../about.html">About</a></li>
+                        <li><a href="../../contact.html">Contact</a></li>
+                        <li><a href="login.html">Login</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect With Us</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Kibarua Platform. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

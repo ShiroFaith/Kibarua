@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviews - Nirus Plt</title>
+    <link rel="stylesheet" href="/Nirus%20Plt/assets/css/style.css">
+    <style>
+        :root {
+            --primary: #007bff;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --gray: #6c757d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+
+        .navbar {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .navbar h1 {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .reviews-container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .sidebar {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar h3 {
+            margin-bottom: 1rem;
+            color: var(--dark);
+            font-size: 1rem;
+        }
+
+        .filter-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .rating-filter {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .rating-btn {
+            flex: 1;
+            padding: 0.5rem;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .rating-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .rating-btn:hover {
+            border-color: var(--primary);
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1rem;
+        }
+
+        .header h2 {
+            font-size: 1.3rem;
+            color: var(--dark);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary) 0%, #0056b3 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-card.warning {
+            background: linear-gradient(135deg, var(--warning) 0%, #e0a800 100%);
+        }
+
+        .stat-card.success {
+            background: linear-gradient(135deg, var(--success) 0%, #20c997 100%);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .reviews-list {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .review-card {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 1.5rem;
+            background: #fafbfc;
+            transition: all 0.3s;
+        }
+
+        .review-card:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .reviewer-info {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .reviewer-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .reviewer-details h4 {
+            margin-bottom: 0.25rem;
+            color: var(--dark);
+        }
+
+        .reviewer-details p {
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin: 0;
+        }
+
+        .review-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stars {
+            display: flex;
+            gap: 2px;
+        }
+
+        .star {
+            color: #ddd;
+            font-size: 1.2rem;
+        }
+
+        .star.filled {
+            color: var(--warning);
+        }
+
+        .rating-badge {
+            background: var(--primary);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .review-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .review-description {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .review-categories {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .category-rating {
+            font-size: 0.9rem;
+        }
+
+        .category-rating label {
+            display: inline;
+            color: var(--gray);
+            margin-right: 0.5rem;
+        }
+
+        .category-stars {
+            display: inline-flex;
+            gap: 2px;
+        }
+
+        .review-response {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            border-left: 3px solid var(--success);
+        }
+
+        .response-header {
+            font-weight: 600;
+            color: var(--success);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .response-text {
+            color: #555;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .review-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: space-between;
+            padding-top: 1rem;
+            border-top: 1px solid #ddd;
+        }
+
+        .action-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.4rem 0.8rem;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--gray);
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background: var(--light);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .helpfulness {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1rem;
+        }
+
+        .modal-header h2 {
+            font-size: 1.3rem;
+        }
+
+        .close-btn {
+            font-size: 1.5rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--gray);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .rating-input {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .rating-input input[type="radio"] {
+            display: none;
+        }
+
+        .rating-input label {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #ddd;
+            transition: color 0.2s;
+            margin: 0;
+        }
+
+        .rating-input input[type="radio"]:checked + label,
+        .rating-input label:hover,
+        .rating-input label:hover ~ label {
+            color: var(--warning);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray);
+        }
+
+        .spinner {
+            border: 4px solid var(--light);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--gray);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .pagination button,
+        .pagination span {
+            padding: 0.5rem 0.8rem;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .pagination button:hover {
+            background: var(--light);
+        }
+
+        .pagination button.active,
+        .pagination span {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .reviews-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+            }
+
+            .review-categories {
+                grid-template-columns: 1fr;
+            }
+
+            .review-header {
+                flex-direction: column;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 50% auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>Reviews & Ratings</h1>
+        <button class="btn btn-primary" onclick="openSubmitReviewModal()">Submit Review</button>
+    </div>
+
+    <div class="container">
+        <div class="reviews-container">
+            <!-- Sidebar Filters -->
+            <div class="sidebar">
+                <h3>Filters</h3>
+                
+                <div class="filter-group">
+                    <label>View Type</label>
+                    <select id="viewType" onchange="applyFilters()">
+                        <option value="worker">Reviews for Workers</option>
+                        <option value="employer">Reviews for Employers</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Rating</label>
+                    <div class="rating-filter">
+                        <button class="rating-btn active" onclick="filterByRating(null)">All</button>
+                        <button class="rating-btn" onclick="filterByRating(5)">5★</button>
+                        <button class="rating-btn" onclick="filterByRating(4)">4★</button>
+                        <button class="rating-btn" onclick="filterByRating(3)">3★</button>
+                        <button class="rating-btn" onclick="filterByRating(1)">1★</button>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label>Search by Reviewer</label>
+                    <input type="text" id="searchReviewer" placeholder="Name..." onkeyup="applyFilters()">
+                </div>
+
+                <button class="btn btn-secondary" onclick="clearFilters()" style="width: 100%; margin-top: 1rem;">Clear Filters</button>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <div class="error-message" id="errorMessage"></div>
+                <div class="success-message" id="successMessage"></div>
+
+                <!-- Stats -->
+                <div class="stats-cards" id="statsContainer"></div>
+
+                <!-- Reviews List -->
+                <div class="header">
+                    <h2>Reviews (<span id="reviewCount">0</span>)</h2>
+                </div>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Loading reviews...</p>
+                </div>
+
+                <div class="reviews-list" id="reviewsList">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <p>No reviews yet</p>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination" id="pagination"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit Review Modal -->
+    <div id="submitReviewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Submit Review</h2>
+                <button class="close-btn" onclick="closeSubmitReviewModal()">&times;</button>
+            </div>
+
+            <div class="error-message" id="modalErrorMessage"></div>
+
+            <form id="submitReviewForm">
+                <div class="form-group">
+                    <label>Hiring ID *</label>
+                    <input type="number" id="hiringId" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Review Type *</label>
+                    <select id="reviewType" required>
+                        <option value="for_worker">Review Worker</option>
+                        <option value="for_employer">Review Employer</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Reviewee ID *</label>
+                    <input type="number" id="revieweeId" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Job ID *</label>
+                    <input type="number" id="jobId" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Title *</label>
+                    <input type="text" id="reviewTitle" placeholder="Short, descriptive title" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Overall Rating *</label>
+                    <div class="rating-input">
+                        <input type="radio" name="overallRating" id="rating5" value="5" required>
+                        <label for="rating5">★</label>
+                        <input type="radio" name="overallRating" id="rating4" value="4">
+                        <label for="rating4">★</label>
+                        <input type="radio" name="overallRating" id="rating3" value="3">
+                        <label for="rating3">★</label>
+                        <input type="radio" name="overallRating" id="rating2" value="2">
+                        <label for="rating2">★</label>
+                        <input type="radio" name="overallRating" id="rating1" value="1">
+                        <label for="rating1">★</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="reviewDescription" placeholder="Share your experience..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Quality</label>
+                    <div class="rating-input">
+                        <input type="radio" name="qualityRating" id="quality5" value="5">
+                        <label for="quality5">★</label>
+                        <input type="radio" name="qualityRating" id="quality4" value="4">
+                        <label for="quality4">★</label>
+                        <input type="radio" name="qualityRating" id="quality3" value="3">
+                        <label for="quality3">★</label>
+                        <input type="radio" name="qualityRating" id="quality2" value="2">
+                        <label for="quality2">★</label>
+                        <input type="radio" name="qualityRating" id="quality1" value="1">
+                        <label for="quality1">★</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Communication</label>
+                    <div class="rating-input">
+                        <input type="radio" name="communicationRating" id="comm5" value="5">
+                        <label for="comm5">★</label>
+                        <input type="radio" name="communicationRating" id="comm4" value="4">
+                        <label for="comm4">★</label>
+                        <input type="radio" name="communicationRating" id="comm3" value="3">
+                        <label for="comm3">★</label>
+                        <input type="radio" name="communicationRating" id="comm2" value="2">
+                        <label for="comm2">★</label>
+                        <input type="radio" name="communicationRating" id="comm1" value="1">
+                        <label for="comm1">★</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Timeliness</label>
+                    <div class="rating-input">
+                        <input type="radio" name="timelinessRating" id="time5" value="5">
+                        <label for="time5">★</label>
+                        <input type="radio" name="timelinessRating" id="time4" value="4">
+                        <label for="time4">★</label>
+                        <input type="radio" name="timelinessRating" id="time3" value="3">
+                        <label for="time3">★</label>
+                        <input type="radio" name="timelinessRating" id="time2" value="2">
+                        <label for="time2">★</label>
+                        <input type="radio" name="timelinessRating" id="time1" value="1">
+                        <label for="time1">★</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Professionalism</label>
+                    <div class="rating-input">
+                        <input type="radio" name="professionalismRating" id="prof5" value="5">
+                        <label for="prof5">★</label>
+                        <input type="radio" name="professionalismRating" id="prof4" value="4">
+                        <label for="prof4">★</label>
+                        <input type="radio" name="professionalismRating" id="prof3" value="3">
+                        <label for="prof3">★</label>
+                        <input type="radio" name="professionalismRating" id="prof2" value="2">
+                        <label for="prof2">★</label>
+                        <input type="radio" name="professionalismRating" id="prof1" value="1">
+                        <label for="prof1">★</label>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeSubmitReviewModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit Review</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Respond to Review Modal -->
+    <div id="respondModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Respond to Review</h2>
+                <button class="close-btn" onclick="closeRespondModal()">&times;</button>
+            </div>
+
+            <form id="respondForm">
+                <input type="hidden" id="respondReviewId">
+
+                <div class="form-group">
+                    <label>Your Response *</label>
+                    <textarea id="responseText" placeholder="Write your response..." required></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeRespondModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit Response</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/Nirus%20Plt/backend/index.php/api';
+        const TOKEN = localStorage.getItem('jwt_token');
+
+        let currentPage = 1;
+        let currentFilters = {
+            viewType: 'worker',
+            rating: null,
+            searchReviewer: ''
+        };
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadReviews();
+            loadStats();
+
+            document.getElementById('submitReviewForm').addEventListener('submit', submitReview);
+            document.getElementById('respondForm').addEventListener('submit', respondToReview);
+        });
+
+        // Load reviews
+        async function loadReviews() {
+            try {
+                const userId = getUserIdFromToken(TOKEN);
+                if (!userId) {
+                    showError('User not authenticated');
+                    return;
+                }
+
+                showLoading(true);
+
+                const params = new URLSearchParams({
+                    user_id: userId,
+                    type: currentFilters.viewType,
+                    page: currentPage,
+                    limit: 10,
+                    token: TOKEN
+                });
+
+                const response = await fetch(`${API_BASE}/reviews/worker?${params}`);
+                const data = await response.json();
+
+                showLoading(false);
+
+                if (!data.success) {
+                    showError(data.message);
+                    return;
+                }
+
+                displayReviews(data.data);
+                updatePagination(data.pagination);
+                document.getElementById('reviewCount').textContent = data.pagination.total;
+
+            } catch (error) {
+                showLoading(false);
+                showError('Error loading reviews: ' + error.message);
+            }
+        }
+
+        // Load statistics
+        async function loadStats() {
+            try {
+                const userId = getUserIdFromToken(TOKEN);
+                if (!userId) return;
+
+                const params = new URLSearchParams({
+                    user_id: userId,
+                    type: currentFilters.viewType,
+                    token: TOKEN
+                });
+
+                const response = await fetch(`${API_BASE}/reviews/stats?${params}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    displayStats(data.data);
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // Display stats
+        function displayStats(stats) {
+            const statsHtml = `
+                <div class="stat-card">
+                    <div class="stat-value">${stats.total_reviews || 0}</div>
+                    <div class="stat-label">Total Reviews</div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-value">${(stats.average_rating || 0).toFixed(1)}</div>
+                    <div class="stat-label">Average Rating</div>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-value">${(stats.category_ratings?.quality || 0).toFixed(1)}</div>
+                    <div class="stat-label">Quality Rating</div>
+                </div>
+            `;
+            document.getElementById('statsContainer').innerHTML = statsHtml;
+        }
+
+        // Display reviews
+        function displayReviews(reviews) {
+            if (reviews.length === 0) {
+                document.getElementById('reviewsList').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <p>No reviews found</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            reviews.forEach(review => {
+                const stars = renderStars(review.rating);
+                const responseHtml = review.has_response ? `
+                    <div class="review-response">
+                        <div class="response-header">Response from ${review.reviewee_name}</div>
+                        <div class="response-text">${review.response_text}</div>
+                    </div>
+                ` : '';
+
+                html += `
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <div class="reviewer-avatar">${getInitials(review.reviewer_name)}</div>
+                                <div class="reviewer-details">
+                                    <h4>${review.reviewer_name}</h4>
+                                    <p>${formatDate(review.created_at)}</p>
+                                </div>
+                            </div>
+                            <div class="review-rating">
+                                <div class="stars">${stars}</div>
+                                <span class="rating-badge">${review.rating}.0</span>
+                            </div>
+                        </div>
+
+                        <div class="review-title">${review.title}</div>
+                        <div class="review-description">${review.description}</div>
+
+                        ${review.quality_rating ? `
+                            <div class="review-categories">
+                                <div class="category-rating">
+                                    <label>Quality:</label>
+                                    <div class="category-stars">${renderStars(review.quality_rating)}</div>
+                                </div>
+                                <div class="category-rating">
+                                    <label>Communication:</label>
+                                    <div class="category-stars">${renderStars(review.communication_rating)}</div>
+                                </div>
+                                <div class="category-rating">
+                                    <label>Timeliness:</label>
+                                    <div class="category-stars">${renderStars(review.timeliness_rating)}</div>
+                                </div>
+                                <div class="category-rating">
+                                    <label>Professionalism:</label>
+                                    <div class="category-stars">${renderStars(review.professionalism_rating)}</div>
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        ${responseHtml}
+
+                        <div class="review-actions">
+                            <div class="action-group">
+                                ${review.has_response ? '' : `<button class="action-btn" onclick="openRespondModal(${review.id})">Respond</button>`}
+                                <button class="action-btn" onclick="flagReview(${review.id})">Report</button>
+                            </div>
+                            <div class="helpfulness">
+                                <button class="action-btn" onclick="markHelpful(${review.id}, true)">👍 ${review.is_helpful || 0}</button>
+                                <button class="action-btn" onclick="markHelpful(${review.id}, false)">👎 ${review.is_unhelpful || 0}</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('reviewsList').innerHTML = html;
+        }
+
+        // Render stars
+        function renderStars(rating) {
+            let html = '';
+            for (let i = 1; i <= 5; i++) {
+                html += `<span class="star ${i <= rating ? 'filled' : ''}">★</span>`;
+            }
+            return html;
+        }
+
+        // Submit review
+        async function submitReview(e) {
+            e.preventDefault();
+
+            try {
+                const formData = {
+                    hiring_id: parseInt(document.getElementById('hiringId').value),
+                    reviewee_id: parseInt(document.getElementById('revieweeId').value),
+                    job_id: parseInt(document.getElementById('jobId').value),
+                    review_type: document.getElementById('reviewType').value,
+                    rating: parseInt(document.querySelector('input[name="overallRating"]:checked')?.value || 5),
+                    title: document.getElementById('reviewTitle').value,
+                    description: document.getElementById('reviewDescription').value,
+                    quality_rating: parseInt(document.querySelector('input[name="qualityRating"]:checked')?.value) || null,
+                    communication_rating: parseInt(document.querySelector('input[name="communicationRating"]:checked')?.value) || null,
+                    timeliness_rating: parseInt(document.querySelector('input[name="timelinessRating"]:checked')?.value) || null,
+                    professionalism_rating: parseInt(document.querySelector('input[name="professionalismRating"]:checked')?.value) || null
+                };
+
+                const response = await fetch(`${API_BASE}/reviews/submit?token=${TOKEN}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showSuccess('Review submitted successfully');
+                    closeSubmitReviewModal();
+                    loadReviews();
+                    loadStats();
+                } else {
+                    document.getElementById('modalErrorMessage').textContent = data.message;
+                    document.getElementById('modalErrorMessage').style.display = 'block';
+                }
+            } catch (error) {
+                document.getElementById('modalErrorMessage').textContent = 'Error: ' + error.message;
+                document.getElementById('modalErrorMessage').style.display = 'block';
+            }
+        }
+
+        // Respond to review
+        async function respondToReview(e) {
+            e.preventDefault();
+
+            try {
+                const reviewId = document.getElementById('respondReviewId').value;
+                const responseText = document.getElementById('responseText').value;
+
+                const response = await fetch(`${API_BASE}/reviews/respond?token=${TOKEN}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ review_id: reviewId, response: responseText })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showSuccess('Response added successfully');
+                    closeRespondModal();
+                    loadReviews();
+                } else {
+                    showError(data.message);
+                }
+            } catch (error) {
+                showError('Error: ' + error.message);
+            }
+        }
+
+        // Mark helpful
+        async function markHelpful(reviewId, isHelpful) {
+            try {
+                const response = await fetch(`${API_BASE}/reviews/helpful?token=${TOKEN}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ review_id: reviewId, is_helpful: isHelpful })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    loadReviews();
+                }
+            } catch (error) {
+                showError('Error: ' + error.message);
+            }
+        }
+
+        // Flag review
+        async function flagReview(reviewId) {
+            if (!confirm('Report this review?')) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/reviews/dispute?token=${TOKEN}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        review_id: reviewId,
+                        reason: 'other',
+                        description: 'Flagged by user'
+                    })
+                });
+
+                const data = await response.json();
+                showSuccess('Review reported successfully');
+            } catch (error) {
+                showError('Error: ' + error.message);
+            }
+        }
+
+        // Apply filters
+        function applyFilters() {
+            currentFilters.viewType = document.getElementById('viewType').value;
+            currentFilters.searchReviewer = document.getElementById('searchReviewer').value;
+            currentPage = 1;
+            loadReviews();
+            loadStats();
+        }
+
+        // Filter by rating
+        function filterByRating(rating) {
+            currentFilters.rating = rating;
+            currentPage = 1;
+            document.querySelectorAll('.rating-btn').forEach(btn => btn.classList.remove('active'));
+            event?.target?.classList?.add('active');
+            loadReviews();
+        }
+
+        // Clear filters
+        function clearFilters() {
+            document.getElementById('viewType').value = 'worker';
+            document.getElementById('searchReviewer').value = '';
+            currentFilters = { viewType: 'worker', rating: null, searchReviewer: '' };
+            currentPage = 1;
+            document.querySelectorAll('.rating-btn').forEach((btn, i) => {
+                btn.classList.toggle('active', i === 0);
+            });
+            loadReviews();
+            loadStats();
+        }
+
+        // Update pagination
+        function updatePagination(pagination) {
+            const totalPages = pagination.total_pages;
+            let html = '';
+
+            if (currentPage > 1) {
+                html += `<button onclick="goToPage(${currentPage - 1})">← Previous</button>`;
+            }
+
+            for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
+                html += `<button onclick="goToPage(${i})" class="${i === currentPage ? 'active' : ''}">${i}</button>`;
+            }
+
+            if (currentPage < totalPages) {
+                html += `<button onclick="goToPage(${currentPage + 1})">Next →</button>`;
+            }
+
+            document.getElementById('pagination').innerHTML = html || '';
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            loadReviews();
+            window.scrollTo(0, 0);
+        }
+
+        // Modal functions
+        function openSubmitReviewModal() {
+            document.getElementById('submitReviewModal').style.display = 'block';
+        }
+
+        function closeSubmitReviewModal() {
+            document.getElementById('submitReviewModal').style.display = 'none';
+            document.getElementById('submitReviewForm').reset();
+            document.getElementById('modalErrorMessage').style.display = 'none';
+        }
+
+        function openRespondModal(reviewId) {
+            document.getElementById('respondReviewId').value = reviewId;
+            document.getElementById('respondModal').style.display = 'block';
+        }
+
+        function closeRespondModal() {
+            document.getElementById('respondModal').style.display = 'none';
+            document.getElementById('respondForm').reset();
+        }
+
+        // Close modal on background click
+        window.onclick = (event) => {
+            const submitModal = document.getElementById('submitReviewModal');
+            const respondModal = document.getElementById('respondModal');
+            if (event.target === submitModal) closeSubmitReviewModal();
+            if (event.target === respondModal) closeRespondModal();
+        };
+
+        // Utility functions
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => { errorDiv.style.display = 'none'; }, 5000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            setTimeout(() => { successDiv.style.display = 'none'; }, 5000);
+        }
+
+        function getUserIdFromToken(token) {
+            if (!token) return null;
+            const parts = token.split('.');
+            if (parts.length !== 3) return null;
+            const decoded = JSON.parse(atob(parts[1]));
+            return decoded.user_id;
+        }
+
+        function getInitials(name) {
+            return name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U';
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diff = now - date;
+
+            if (diff < 60000) return 'just now';
+            if (diff < 3600000) return Math.floor(diff / 60000) + 'm ago';
+            if (diff < 86400000) return Math.floor(diff / 3600000) + 'h ago';
+            if (diff < 604800000) return Math.floor(diff / 86400000) + 'd ago';
+
+            return date.toLocaleDateString();
+        }
+    </script>
+</body>
+</html>
