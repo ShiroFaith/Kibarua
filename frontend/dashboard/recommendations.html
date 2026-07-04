@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recommended Jobs | Kibarua</title>
-    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         .recommendations-container {
@@ -14,7 +15,7 @@
         }
 
         .header-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
             color: white;
             padding: 40px 20px;
             border-radius: 10px;
@@ -80,7 +81,7 @@
 
         .filter-group button {
             padding: 8px 16px;
-            background: #667eea;
+            background: #2ecc71;
             color: white;
             border: none;
             border-radius: 5px;
@@ -93,7 +94,7 @@
 
         .job-recommendation-card {
             background: white;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #2ecc71;
             padding: 25px;
             margin-bottom: 20px;
             border-radius: 8px;
@@ -124,7 +125,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
             color: white;
             padding: 15px 25px;
             border-radius: 10px;
@@ -187,7 +188,7 @@
         }
 
         .meta-item i {
-            color: #667eea;
+            color: #2ecc71;
             min-width: 16px;
         }
 
@@ -213,7 +214,7 @@
         }
 
         .match-reasons strong {
-            color: #667eea;
+            color: #2ecc71;
         }
 
         .skills-section {
@@ -225,7 +226,7 @@
 
         .skill-badge {
             background: #ecefff;
-            color: #667eea;
+            color: #2ecc71;
             padding: 4px 10px;
             border-radius: 15px;
             font-size: 12px;
@@ -240,7 +241,7 @@
 
         .btn-apply {
             padding: 10px 20px;
-            background: #667eea;
+            background: #2ecc71;
             color: white;
             border: none;
             border-radius: 5px;
@@ -381,7 +382,7 @@
         }
     </style>
 </head>
-<body>
+<body class="dashboard-body">
     <nav class="nav-bar">
         <div class="logo"><h2>KIBARUA</h2></div>
         <div class="nav-links">
@@ -421,14 +422,35 @@
                 <label>Category:</label>
                 <select id="categoryFilter" onchange="applyFilters()">
                     <option value="">All Categories</option>
-                    <option value="web_development">Web Development</option>
-                    <option value="mobile_development">Mobile Development</option>
-                    <option value="design">Design & UX</option>
-                    <option value="writing">Writing</option>
-                    <option value="digital_marketing">Digital Marketing</option>
-                    <option value="data_analysis">Data Analysis</option>
-                    <option value="accounting">Accounting</option>
-                    <option value="administrative">Administrative</option>
+                    <optgroup label="Casual &amp; Manual Work">
+                        <option value="cleaning">Cleaning</option>
+                        <option value="domestic_work">House Help / Domestic</option>
+                        <option value="cooking">Cooking &amp; Catering</option>
+                        <option value="plumbing">Plumbing</option>
+                        <option value="electrical">Electrical</option>
+                        <option value="carpentry">Carpentry</option>
+                        <option value="painting">Painting</option>
+                        <option value="masonry">Masonry &amp; Construction</option>
+                        <option value="welding">Welding &amp; Fabrication</option>
+                        <option value="mechanic">Auto Mechanic</option>
+                        <option value="gardening">Gardening &amp; Landscaping</option>
+                        <option value="farming">Farm Work / Agriculture</option>
+                        <option value="moving">Moving &amp; Delivery</option>
+                        <option value="tailoring">Tailoring</option>
+                        <option value="security">Security</option>
+                        <option value="beauty">Beauty &amp; Salon</option>
+                        <option value="tutoring">Tutoring &amp; Lessons</option>
+                    </optgroup>
+                    <optgroup label="Skilled &amp; Digital Work">
+                        <option value="web_development">Web Development</option>
+                        <option value="mobile_development">Mobile Development</option>
+                        <option value="design">Design &amp; UX</option>
+                        <option value="writing">Writing &amp; Content</option>
+                        <option value="digital_marketing">Digital Marketing</option>
+                        <option value="data_analysis">Data Analysis</option>
+                        <option value="accounting">Accounting &amp; Finance</option>
+                        <option value="administrative">Administrative</option>
+                    </optgroup>
                 </select>
             </div>
 
@@ -447,44 +469,15 @@
         <div id="recommendationsContainer"></div>
     </main>
 
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>KIBARUA</h4>
-                    <p>Empowering Kenya's informal workforce through technology.</p>
-                </div>
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="../../index.html">Home</a></li>
-                        <li><a href="../../about.html">About</a></li>
-                        <li><a href="../../contact.html">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Connect With Us</h4>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 Kibarua Platform. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+    <footer class="dashboard-footer"><p>&copy; 2026 Kibarua Platform</p></footer>
 
     <script>
-        const API_BASE_URL = 'http://localhost/Nirus%20Plt/backend/index.php';
+        const API_BASE_URL = 'http://localhost:5050';
         let allRecommendations = [];
 
         document.addEventListener('DOMContentLoaded', () => {
             if (!localStorage.getItem('token')) {
-                window.location.href = '../auth/login.html';
+                window.location.href = '../pages/auth/login.html';
                 return;
             }
             loadStats();
@@ -746,8 +739,9 @@
         window.logout = function() {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
-            window.location.href = '../auth/login.html';
+            window.location.href = '../pages/auth/login.html';
         };
     </script>
+    <script src="../assets/js/dashboard-shell.js"></script>
 </body>
 </html>

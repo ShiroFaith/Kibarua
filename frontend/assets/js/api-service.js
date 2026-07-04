@@ -3,8 +3,8 @@
  * Usage: import { apiCall, auth } from 'api-service.js'
  */
 
-// Local development backend — direct folder-structure, no .htaccess rewriting needed.
-const API_BASE = 'http://localhost/nirus/backend/api';
+// Local development backend - direct folder-structure, no .htaccess rewriting needed.
+const API_BASE = 'http://localhost:5050/api';
 
 class APIService {
     constructor(baseURL) {

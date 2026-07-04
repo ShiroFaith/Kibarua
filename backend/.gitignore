@@ -1,0 +1,11 @@
+node_modules/
+.env
+*.log
+data/*.sqlite
+data/*.sqlite-journal
+data/*.sqlite-wal
+data/*.sqlite-shm
+# The pre-seeded demo database IS committed so the app has data out of the box.
+!data/kibarua.sqlite
+uploads/*
+!uploads/.gitkeep

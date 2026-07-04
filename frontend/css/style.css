@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
 :root {
     --primary-color: #2ecc71;
     --secondary-color: #27ae60;
@@ -17,7 +19,7 @@ html {
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Plus Jakarta Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
     line-height: 1.6;
@@ -113,6 +115,17 @@ body {
 }
 
 /* Password Input Container */
+/* Mobile hamburger for the public nav (hidden on desktop). */
+.nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-color);
+    cursor: pointer;
+    line-height: 1;
+}
+
 .password-container {
     position: relative;
     display: flex;
@@ -285,24 +298,6 @@ body {
     border-color: var(--primary-color);
     background: white;
     box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.1);
-}
-2px solid white;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 500;
-    text-decoration: none;
-    display: inline-block;
-}
-
-.btn-secondary:hover {
-    background: white;
-    color: var(--text-color);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2)ical;
-    min-height: 120px;
 }
 
 .w-100 { width: 100%; }
@@ -512,11 +507,11 @@ body {
 
 /* ===================== AUTH PAGES ===================== */
 .auth-container {
-    min-height: 100vh;
+    min-height: calc(100vh - 72px);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 40px 20px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
@@ -586,15 +581,70 @@ body {
         flex-direction: column;
         height: auto;
     }
-    
+
     .auth-form {
         padding: 30px;
     }
-    
+
     .auth-side-img {
         display: none;
     }
 }
+
+/* ---- Auth form feedback (alerts, inline errors, button loading) ---- */
+.form-alert {
+    display: none;
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    margin-bottom: 20px;
+}
+.form-alert.show { display: block; }
+.form-alert.error {
+    background: #fdecea;
+    color: #b3261e;
+    border-left: 4px solid #e5484d;
+}
+.form-alert.success {
+    background: rgba(46, 204, 113, 0.12);
+    color: #1e7e46;
+    border-left: 4px solid var(--primary-color);
+}
+
+.field-error {
+    display: none;
+    color: #e5484d;
+    font-size: 0.8rem;
+    margin-top: 6px;
+}
+.input-group.invalid input,
+.input-group.invalid select {
+    border-color: #e5484d;
+    background: #fff;
+}
+.input-group.invalid .field-error { display: block; }
+
+.btn-primary[disabled],
+.btn-primary.loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+.btn-primary.loading::after {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-left: 8px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-top-color: #fff;
+    border-radius: 50%;
+    vertical-align: -2px;
+    animation: spin 0.6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 
 /* ===================== ABOUT PAGE ===================== */
 .about-section {
@@ -958,27 +1008,39 @@ body {
         font-size: 14px;
     }
     
-    /* Navigation */
+    /* Navigation - collapse to a hamburger menu */
     .nav-bar {
-        padding: 0.8rem 3%;
-        flex-direction: column;
-        gap: 15px;
+        padding: 0.8rem 4%;
+        flex-wrap: wrap;
     }
-    
+
     .logo h2 {
         font-size: 1.2rem;
         margin: 0;
     }
-    
+
+    .nav-toggle { display: block; }
+
     .nav-links {
-        gap: 8px;
-        justify-content: center;
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+        gap: 4px;
+        margin-top: 12px;
     }
-    
+
+    .nav-links.open { display: flex; }
+
     .nav-links a {
-        font-size: 0.85rem;
-        padding: 8px 12px;
+        font-size: 0.95rem;
+        padding: 12px 10px;
+        border-radius: 8px;
     }
+
+    .nav-links a:hover { background: #f1f5f4; }
+
+    .nav-links a.btn-primary { text-align: center; }
     
     /* Hero Section */
     .hero {
@@ -1861,7 +1923,7 @@ body.dashboard-body {
     .stat-number {
         font-size: 1.5rem;
     }
-}
+
     .cta-section h2 {
         font-size: 1.2rem;
     }

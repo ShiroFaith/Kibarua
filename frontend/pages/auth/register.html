@@ -10,108 +10,48 @@
         .success-modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(5px);
             z-index: 10000;
             justify-content: center;
             align-items: center;
+            padding: 20px;
         }
-        
-        .success-modal.show {
-            display: flex;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-        
+        .success-modal.show { display: flex; animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
         .success-modal-content {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
             border-radius: 20px;
-            padding: 50px;
+            padding: 45px;
             text-align: center;
-            max-width: 450px;
+            max-width: 440px;
+            width: 100%;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             animation: slideUp 0.4s ease-out;
             color: white;
         }
-        
         @keyframes slideUp {
-            from {
-                transform: translateY(50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+            from { transform: translateY(40px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
-        
-        .success-icon {
-            font-size: 80px;
-            color: #00ff88;
-            margin-bottom: 20px;
-            animation: bounce 0.6s ease-out;
-        }
-        
-        @keyframes bounce {
-            0%, 100% {
-                transform: scale(0);
-            }
-            50% {
-                transform: scale(1.1);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-        
-        .success-modal-content h2 {
-            font-size: 32px;
-            margin-bottom: 15px;
-            font-weight: 700;
-        }
-        
-        .success-modal-content p {
-            font-size: 16px;
-            opacity: 0.95;
-            margin-bottom: 10px;
-            line-height: 1.6;
-        }
-        
-        .verification-info {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 15px 20px;
-            border-radius: 12px;
-            margin: 20px 0;
-            font-size: 14px;
-            border-left: 4px solid #00ff88;
-        }
-        
+        .success-icon { font-size: 72px; margin-bottom: 15px; }
+        .success-modal-content h2 { font-size: 28px; margin: 0 0 12px; font-weight: 700; }
+        .success-modal-content p { font-size: 15px; opacity: 0.95; margin: 0 0 8px; line-height: 1.6; }
         .success-modal-content button {
             background: white;
-            color: #667eea;
+            color: #1e7e46;
             border: none;
             padding: 14px 40px;
             border-radius: 25px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 20px;
+            margin-top: 22px;
             transition: all 0.3s ease;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
         }
-        
         .success-modal-content button:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
@@ -123,50 +63,71 @@
         <div class="logo"><h2>KIBARUA</h2></div>
         <div class="nav-links">
             <a href="../../index.html">Home</a>
-            <a href="#" class="btn-primary" onclick="window.location.href='login.html'" style="color: white;">Login</a>
+            <a href="login.html" class="btn-primary" style="color: white;">Login</a>
         </div>
     </nav>
 
-    <main class="auth-container">    
+    <main class="auth-container">
         <div class="auth-card glass-morphism">
-            <div class="auth-form">
+            <form class="auth-form" id="registerForm" novalidate>
                 <h2>Create Account</h2>
                 <p>Join Kibarua and start working</p>
-                <div class="input-group">
-    <label>Username</label>
-    <input type="text" id="reg-username" placeholder="Enter a username" required>
-</div>
+
+                <div class="form-alert" id="formAlert" role="alert"></div>
+
+                <div class="input-group" id="grp-name">
+                    <label for="reg-name">Full Name</label>
+                    <input type="text" id="reg-name" name="full_name" placeholder="e.g. Jane Wanjiru" autocomplete="name" required>
+                    <span class="field-error">Please enter your full name.</span>
+                </div>
+
+                <div class="input-group" id="grp-username">
+                    <label for="reg-username">Username</label>
+                    <input type="text" id="reg-username" name="username" placeholder="Choose a username" autocomplete="username" required>
+                    <span class="field-error">Username must be at least 3 characters.</span>
+                </div>
 
                 <div class="input-group">
-                    <label>Full Name</label>
-                    <input type="text" id="reg-name" >
-                </div>
-                <div class="input-group">
-                    <label>I want to:</label>
-                    <select id="reg-role" class="form-control">
+                    <label for="reg-role">I want to:</label>
+                    <select id="reg-role" name="role" class="form-control">
                         <option value="worker">Find Work (Job Seeker)</option>
                         <option value="employer">Hire Someone (Employer)</option>
                     </select>
                 </div>
-                <div class="input-group">
-                    <label>Email</label>
-                    <input type="email" id="reg-email" placeholder="example@mail.com">
+
+                <div class="input-group" id="grp-email">
+                    <label for="reg-email">Email</label>
+                    <input type="email" id="reg-email" name="email" placeholder="example@mail.com" autocomplete="email" required>
+                    <span class="field-error">Please enter a valid email address.</span>
                 </div>
-                <div class="input-group">
-                    <label>Password</label>
+
+                <div class="input-group" id="grp-password">
+                    <label for="reg-password">Password</label>
                     <div class="password-container">
-                        <input type="password" id="reg-password" placeholder="Min 8 chars">
+                        <input type="password" id="reg-password" name="password" placeholder="At least 6 characters" autocomplete="new-password" required>
                         <i class="fa-solid fa-eye" onclick="togglePass('reg-password', this)"></i>
                     </div>
+                    <span class="field-error">Password must be at least 6 characters.</span>
                 </div>
-                <button class="btn-primary w-100" onclick="authSignup()" style="margin-top: 20px;">Register</button>
+
+                <div class="input-group" id="grp-confirm">
+                    <label for="reg-confirm">Confirm Password</label>
+                    <div class="password-container">
+                        <input type="password" id="reg-confirm" name="confirm_password" placeholder="Re-enter your password" autocomplete="new-password" required>
+                        <i class="fa-solid fa-eye" onclick="togglePass('reg-confirm', this)"></i>
+                    </div>
+                    <span class="field-error">Passwords do not match.</span>
+                </div>
+
+                <button type="submit" class="btn-primary w-100" id="submitBtn" style="margin-top: 20px;">Register</button>
+
                 <p style="text-align: center; margin-top: 20px; color: #666;">
                     Already have an account? <a href="login.html" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">Sign In</a>
                 </p>
                 <p style="text-align: center; margin-top: 15px; font-size: 0.85rem; color: #999; line-height: 1.5;">
                     By registering, you agree to our <a href="#" style="color: var(--primary-color); text-decoration: none;">Terms of Service</a> and <a href="#" style="color: var(--primary-color); text-decoration: none;">Privacy Policy</a>
                 </p>
-            </div>
+            </form>
             <div class="auth-side-img">
                 <img src="../../images/signin.jpeg" alt="Register" style="width: 100%; height: 100%; object-fit: cover;">
             </div>
@@ -176,110 +137,91 @@
     <!-- Success Modal -->
     <div id="successModal" class="success-modal">
         <div class="success-modal-content">
-            <div class="success-icon">
-                <i class="fas fa-check-circle"></i>
-            </div>
-            <h2>Registration Successful!</h2>
-            <p>🎉 Welcome to Kibarua!</p>
-            <div class="verification-info">
-                <strong>📧 Verify Your Email</strong>
-                <p style="margin-top: 8px;">Check your email inbox for a verification link. Click it to confirm your email and activate your account.</p>
-                <p style="font-size: 13px; margin-top: 8px; opacity: 0.9;">Didn't receive the email? Check your spam folder.</p>
-            </div>
-            <button onclick="closeSuccessModal()">Proceed to Login</button>
+            <div class="success-icon"><i class="fas fa-circle-check"></i></div>
+            <h2>Account Created!</h2>
+            <p>🎉 Welcome to Kibarua.</p>
+            <p>Your account is ready - sign in to get started.</p>
+            <button onclick="goToLogin()">Proceed to Login</button>
         </div>
     </div>
 
     <script>
+        const API_BASE = 'http://localhost:5050/api';
+
         function togglePass(inputId, icon) {
             const input = document.getElementById(inputId);
-            if (input.type === "password") {
-                input.type = "text";
-                icon.classList.replace('fa-eye', 'fa-eye-slash');
-            } else {
-                input.type = "password";
-                icon.classList.replace('fa-eye-slash', 'fa-eye');
-            }
+            const show = input.type === 'password';
+            input.type = show ? 'text' : 'password';
+            icon.classList.toggle('fa-eye', !show);
+            icon.classList.toggle('fa-eye-slash', show);
         }
 
-        function showSuccessModal() {
-            const modal = document.getElementById('successModal');
-            modal.classList.add('show');
+        function showAlert(type, message) {
+            const box = document.getElementById('formAlert');
+            box.textContent = message;
+            box.className = 'form-alert show ' + type;
+            box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
-
-        function closeSuccessModal() {
-            const modal = document.getElementById('successModal');
-            modal.classList.remove('show');
-            window.location.href = "login.html";
+        function clearAlert() { document.getElementById('formAlert').className = 'form-alert'; }
+        function setInvalid(id, invalid) { document.getElementById(id).classList.toggle('invalid', invalid); }
+        function setLoading(on) {
+            const btn = document.getElementById('submitBtn');
+            btn.classList.toggle('loading', on);
+            btn.disabled = on;
+            btn.textContent = on ? 'Creating account' : 'Register';
         }
+        function goToLogin() { window.location.href = 'login.html'; }
 
-        // ================================ API CONFIGURATION ================================
-        // Direct folder-structure endpoint — no .htaccess rewriting required.
-        const API_BASE = "http://localhost/nirus/backend/api";
-        // ================================ SIGN UP FUNCTION ================================
-        window.authSignup = async function() {
-            console.log("Signup clicked");
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearAlert();
 
-            const username = document.getElementById('reg-username').value.trim();
             const fullName = document.getElementById('reg-name').value.trim();
+            const username = document.getElementById('reg-username').value.trim();
             const role = document.getElementById('reg-role').value;
             const email = document.getElementById('reg-email').value.trim();
             const password = document.getElementById('reg-password').value;
-            const confirmPassword = password;
+            const confirm = document.getElementById('reg-confirm').value;
 
+            const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            const nameOk = fullName.length >= 2;
+            const userOk = username.length >= 3;
+            const passOk = password.length >= 6;
+            const matchOk = password === confirm;
 
-            if (!fullName || !email || password.length < 8) {
-                alert("Please fill all fields. Password must be at least 8 characters.");
-                return;
-            }
+            setInvalid('grp-name', !nameOk);
+            setInvalid('grp-username', !userOk);
+            setInvalid('grp-email', !emailOk);
+            setInvalid('grp-password', !passOk);
+            setInvalid('grp-confirm', !matchOk);
+            if (!nameOk || !userOk || !emailOk || !passOk || !matchOk) return;
 
-            if (password !== confirmPassword) {
-                alert("Passwords do not match.");
-                return;
-            }
-
-    
-
+            setLoading(true);
             try {
-                // Use form-encoded payload to avoid OPTIONS preflight from Live Server.
-                const formPayload = new URLSearchParams({
-                    username: email.split('@')[0],
-                    email: email,
-                    password: password,
-                    full_name: fullName,
-                    role: role,
+                const body = new URLSearchParams({
+                    username, full_name: fullName, email, password,
+                    confirm_password: confirm, role,
                 });
-
-                const response = await fetch(`${API_BASE}/auth/register.php`, {
-                    method: "POST",
-                    body: formPayload
-                });
-
-               const text = await response.text();
-console.log("Server response:", text);
-
-let data;
-try {
-    data = JSON.parse(text);
-} catch (e) {
-    throw new Error("Invalid JSON from server");
-}
+                const res = await fetch(`${API_BASE}/auth/register.php`, { method: 'POST', body });
+                const data = await res.json();
 
                 if (!data.success) {
-                    const errorMsg = data.errors 
-                        ? JSON.stringify(data.errors) 
-                        : (data.message || 'Unknown error occurred');
-                    alert("Registration Error: " + errorMsg);
-                    console.error("Full response:", data);
+                    // Surface field-level errors from the API when present.
+                    const msg = data.errors
+                        ? Object.values(data.errors).join(' ')
+                        : (data.message || 'Registration failed.');
+                    showAlert('error', msg);
+                    setLoading(false);
                     return;
                 }
 
-                showSuccessModal();
-            } catch (error) {
-                alert("Error: " + error.message);
-                console.error("Fetch Error:", error);
+                document.getElementById('successModal').classList.add('show');
+            } catch (err) {
+                console.error('Registration error:', err);
+                showAlert('error', 'Could not reach the server. Please try again.');
+                setLoading(false);
             }
-        };
+        });
     </script>
 
     <!-- Footer -->
@@ -310,7 +252,7 @@ try {
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 Kibarua Platform. All rights reserved.</p>
+                <p>&copy; 2026 Kibarua Platform. All rights reserved.</p>
             </div>
         </div>
     </footer>

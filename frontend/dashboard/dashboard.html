@@ -1,109 +1,48 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | Kibarua Platform</title>
-	<link rel="stylesheet" href="../../css/style.css">
-	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+	<link rel="stylesheet" href="../css/style.css">
+	<link rel="stylesheet" href="../css/dashboard.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 	<script>
-		// Initialize Supabase for this dashboard
-		const SUPABASE_URL = "https://wadjqsgwpzmxiwymqghs.supabase.co";
-		const SUPABASE_KEY = "sb_publishable_BPgHoH8Cv78ejyLY2DBLoA_LhbK7X8k";
-		const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+		// ── Kibarua backend config ──────────────────────────────────────────
+		const API_BASE = 'http://localhost:5050/api';
 
-		// Logout Function - Define early so onclick handlers can find it
-		async function logout() {
-			await supabase.auth.signOut();
-			window.location.href = "../../index.html";
+		// The JWT is stored under several keys for cross-page compatibility.
+		function getToken() {
+			return localStorage.getItem('token')
+				|| localStorage.getItem('jwt_token')
+				|| localStorage.getItem('authToken');
 		}
 
-		// Sidebar Toggle Functions  
+		// Logout - clear the session and return home.
+		function logout() {
+			['token', 'jwt_token', 'authToken', 'user'].forEach((k) => localStorage.removeItem(k));
+			window.location.href = '../index.html';
+		}
+
+		// Sidebar Toggle Functions (the sidebar itself is injected by the shell)
 		function toggleSidebar() {
 			const sidebar = document.querySelector('.sidebar');
 			const overlay = document.querySelector('.sidebar-overlay');
-			sidebar.classList.toggle('active');
-			overlay.classList.toggle('active');
+			if (sidebar) sidebar.classList.toggle('active');
+			if (overlay) overlay.classList.toggle('active');
 		}
-		
+
 		function closeSidebar() {
 			const sidebar = document.querySelector('.sidebar');
 			const overlay = document.querySelector('.sidebar-overlay');
-			sidebar.classList.remove('active');
-			overlay.classList.remove('active');
+			if (sidebar) sidebar.classList.remove('active');
+			if (overlay) overlay.classList.remove('active');
 		}
 	</script>
 </head>
 <body class="dashboard-body">
-	<nav class="nav-bar">
-    	<div class="nav-left">
-    		<button class="sidebar-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-    		<div class="logo"><h2>KIBARUA</h2></div>
-    	</div>
-    	<div class="nav-links">
-        	<span id="user-greeting" style="margin-right: 15px; font-weight: 600;"></span>
-        	<a href="#" class="btn-primary" onclick="logout()" style="color: white;">Logout</a>
-    	</div>
-	</nav>
-	
-	<!-- Sidebar -->
-	<aside class="sidebar">
-		<div class="sidebar-header">
-			<h3>Menu</h3>
-			<button class="close-sidebar" onclick="closeSidebar()"><i class="fas fa-times"></i></button>
-		</div>
-		<nav class="sidebar-nav">
-			<a href="#" class="sidebar-item active" onclick="showSection('dashboard')">
-				<i class="fas fa-home"></i> Dashboard
-			</a>
-			
-			<!-- EMPLOYEE MENU ITEMS -->
-			<div id="employee-menu">
-				<a href="#" class="sidebar-item" id="browse-jobs-link" onclick="showSection('browse-jobs')">
-					<i class="fas fa-search"></i> Browse Jobs
-				</a>
-				<a href="#" class="sidebar-item" id="my-applications-link" onclick="showSection('my-applications')">
-					<i class="fas fa-file-alt"></i> My Applications
-				</a>
-				<a href="#" class="sidebar-item" id="employee-profile-link" onclick="showSection('employee-profile')">
-					<i class="fas fa-user"></i> My Profile
-				</a>
-			</div>
-			
-			<!-- EMPLOYER MENU ITEMS -->
-			<div id="employer-menu" style="display: none;">
-				<a href="#" class="sidebar-item" id="post-job-link" onclick="showSection('post-job')">
-					<i class="fas fa-plus-circle"></i> Post a Job
-				</a>
-				<a href="#" class="sidebar-item" id="my-jobs-link" onclick="showSection('my-jobs')">
-					<i class="fas fa-briefcase"></i> My Jobs
-				</a>
-				<a href="#" class="sidebar-item" id="job-applications-link" onclick="showSection('job-applications')">
-					<i class="fas fa-inbox"></i> Applications
-				</a>
-				<a href="#" class="sidebar-item" id="employee-ratings-link" onclick="showSection('employee-ratings')">
-					<i class="fas fa-star"></i> Rate Employees
-				</a>
-				<a href="#" class="sidebar-item" id="employer-profile-link" onclick="showSection('employer-profile')">
-					<i class="fas fa-user"></i> Profile
-				</a>
-			</div>
-			
-			<a href="#" class="sidebar-item" id="settings-link" onclick="showSection('settings')">
-				<i class="fas fa-cog"></i> Settings
-			</a>
-		</nav>
-		<div class="sidebar-footer">
-			<a href="#" class="sidebar-item logout-item" onclick="logout()">
-				<i class="fas fa-sign-out-alt"></i> Logout
-			</a>
-		</div>
-	</aside>
-	
-	<!-- Sidebar Overlay for Mobile -->
-	<div class="sidebar-overlay" onclick="closeSidebar()"></div>
- 
+	<!-- Top bar + sidebar are injected by dashboard-shell.js for a consistent menu -->
+
 	<main class="dashboard-main">
     	<!-- Dashboard Overview Section (BOTH ROLES) -->
     	<div id="dashboard-overview" class="dashboard-section">
@@ -129,14 +68,14 @@
     			</div>
     			<div class="stat-card">
     				<i class="fas fa-wallet"></i>
-    				<h3>Earnings</h3>
+    				<h3 id="earnings-label">Earnings</h3>
     				<p class="stat-number" id="earnings-count">Ksh 0</p>
     			</div>
     		</div>
     	</div>
-    	
+
     	<!-- ========== EMPLOYEE SECTIONS ========== -->
-    	
+
     	<!-- Browse Jobs Section (EMPLOYEE) -->
     	<section id="browse-jobs-section" class="dashboard-section" style="display: none;">
     		<h2>Available Jobs Near You</h2>
@@ -144,16 +83,13 @@
     			<input type="text" id="search-jobs" placeholder="Search by job title..." class="search-input">
     			<select id="filter-location" class="filter-select">
     				<option value="">All Locations</option>
-    				<option value="Nairobi">Nairobi</option>
-    				<option value="Mombasa">Mombasa</option>
-    				<option value="Kisumu">Kisumu</option>
     			</select>
     		</div>
     		<div id="job-list" class="job-grid">
                 <p style="text-align: center; padding: 40px;">Loading available jobs...</p>
             </div>
         </section>
-        
+
         <!-- My Applications Section (EMPLOYEE) -->
         <section id="my-applications-section" class="dashboard-section" style="display: none;">
         	<h2>My Job Applications</h2>
@@ -161,7 +97,7 @@
                 <p style="text-align: center; padding: 40px;">No applications yet. Browse available jobs to apply.</p>
             </div>
         </section>
-        
+
         <!-- Employee Profile Section -->
         <section id="employee-profile-section" class="dashboard-section" style="display: none;">
         	<h2>My Profile</h2>
@@ -170,36 +106,36 @@
         			<div class="profile-header">
         				<div class="profile-avatar-large">
         					<i class="fas fa-user-circle" style="font-size: 100px; color: var(--primary-color);"></i>
-        					<input type="file" id="employee-avatar" style="display: none;">
+        					<input type="file" id="employee-avatar" accept="image/*" style="display: none;">
         					<button class="btn-primary" onclick="document.getElementById('employee-avatar').click()" style="margin-top: 10px;">Change Photo</button>
         				</div>
         				<div class="profile-header-info">
         					<h3 id="emp-profile-name">Loading...</h3>
         					<p id="emp-profile-email">Loading...</p>
-        					<p id="emp-profile-rating">Rating: <span id="emp-rating-value">5.0</span> ⭐</p>
+        					<p id="emp-profile-rating">Rating: <span id="emp-rating-value">5.0</span> <i class="fas fa-star" style="color:#f5b301"></i></p>
         				</div>
         			</div>
         			<div style="margin-top: 30px;">
         				<h4>Professional Summary</h4>
         				<textarea id="emp-bio" placeholder="Tell employers about yourself..." class="form-control" rows="4"></textarea>
-        				
+
         				<h4 style="margin-top: 20px;">Skills</h4>
         				<input type="text" id="emp-skills" placeholder="e.g., Plumbing, Painting, Carpentry" class="form-control">
-        				
+
         				<h4 style="margin-top: 20px;">Experience (Years)</h4>
         				<input type="number" id="emp-experience" placeholder="Years of experience" class="form-control">
-        				
+
         				<h4 style="margin-top: 20px;">Hourly Rate (Ksh)</h4>
         				<input type="number" id="emp-rate" placeholder="Expected hourly rate" class="form-control">
-        				
+
         				<button class="btn-primary" onclick="saveEmployeeProfile()" style="margin-top: 20px;">Save Profile</button>
         			</div>
         		</div>
         	</div>
         </section>
-        
+
         <!-- ========== EMPLOYER SECTIONS ========== -->
-        
+
         <!-- Post a Job Section (EMPLOYER) -->
         <section id="post-job-section" class="dashboard-section" style="display: none;">
         	<h2>Post a New Job</h2>
@@ -215,7 +151,7 @@
                             <input type="text" id="job-location" placeholder="e.g., Mombasa CBD">
                         </div>
                     </div>
-                    
+
                     <div class="form-row">
                         <div class="form-group">
                             <label>Budget (Ksh)</label>
@@ -231,22 +167,22 @@
                             </select>
                         </div>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Job Description</label>
                         <textarea id="job-desc" placeholder="Describe the work in detail..." class="form-control" rows="5"></textarea>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Required Skills</label>
                         <input type="text" id="job-skills" placeholder="e.g., Plumbing, Carpentry">
                     </div>
-                    
+
                     <button class="btn-primary" onclick="postJob()">Post Job</button>
                 </div>
             </div>
         </section>
-        
+
         <!-- My Jobs Section (EMPLOYER) -->
         <section id="my-jobs-section" class="dashboard-section" style="display: none;">
         	<h2>My Posted Jobs</h2>
@@ -254,7 +190,7 @@
                 <p style="text-align: center; padding: 40px;">No jobs posted yet. <a href="#" onclick="showSection('post-job')" style="color: var(--primary-color); font-weight: 600;">Post your first job</a></p>
             </div>
         </section>
-        
+
         <!-- Job Applications Section (EMPLOYER) -->
         <section id="job-applications-section" class="dashboard-section" style="display: none;">
         	<h2>Job Applications</h2>
@@ -262,7 +198,7 @@
                 <p style="text-align: center; padding: 40px;">No applications received yet.</p>
             </div>
         </section>
-        
+
         <!-- Rate Employees Section (EMPLOYER) -->
         <section id="employee-ratings-section" class="dashboard-section" style="display: none;">
         	<h2>Rate Employees</h2>
@@ -270,7 +206,7 @@
                 <p style="text-align: center; padding: 40px;">No completed jobs to rate yet.</p>
             </div>
         </section>
-        
+
         <!-- Employer Profile Section -->
         <section id="employer-profile-section" class="dashboard-section" style="display: none;">
         	<h2>Business Profile</h2>
@@ -290,22 +226,22 @@
         			<div style="margin-top: 30px;">
         				<h4>Company Name</h4>
         				<input type="text" id="company-name" placeholder="Your company name" class="form-control">
-        				
+
         				<h4 style="margin-top: 20px;">Company Description</h4>
         				<textarea id="company-desc" placeholder="Tell workers about your company..." class="form-control" rows="4"></textarea>
-        				
+
         				<h4 style="margin-top: 20px;">Contact Phone</h4>
         				<input type="tel" id="company-phone" placeholder="+254..." class="form-control">
-        				
+
         				<h4 style="margin-top: 20px;">Business Type</h4>
         				<input type="text" id="company-type" placeholder="e.g., Construction, Cleaning, Home Services" class="form-control">
-        				
+
         				<button class="btn-primary" onclick="saveEmployerProfile()" style="margin-top: 20px;">Save Profile</button>
         			</div>
         		</div>
         	</div>
         </section>
-        
+
         <!-- Settings Section (BOTH ROLES) -->
         <section id="settings-section" class="dashboard-section" style="display: none;">
         	<h2>Settings</h2>
@@ -319,7 +255,7 @@
         				<label><input type="checkbox"> Push Notifications</label>
         			</div>
         		</div>
-        		
+
         		<h3 style="margin-top: 30px;">Change Password</h3>
         		<div class="settings-group">
         			<div class="form-group">
@@ -335,254 +271,435 @@
         	</div>
         </section>
 	</main>
- 
-	<script src="../../js/main.js"></script>
+
+	<!-- Shared sidebar + top bar (same menu as every other dashboard page) -->
+	<script src="../assets/js/dashboard-shell.js"></script>
+
 	<script>
+		let currentUser = null;
 		let currentUserRole = null;
 
-		// Load Dashboard Data
-		function loadDashboardData(user) {
-			// Update user greeting
-			const greeting = document.getElementById('user-greeting');
-			const userName = user?.user_metadata?.full_name || 'User';
-			greeting.textContent = `Welcome, ${userName}!`;
-			
-			// Note: Additional dashboard data loading can be added here
-			// such as fetching jobs, applications, etc.
-		}		
-		// Initialize Role-Based Menu
+		// ── Small helpers ────────────────────────────────────────────────────
+		const money = (n) => 'Ksh ' + Number(n || 0).toLocaleString('en-KE');
+
+		function escapeHtml(s) {
+			const d = document.createElement('div');
+			d.textContent = s == null ? '' : String(s);
+			return d.innerHTML;
+		}
+
+		function debounce(fn, ms) {
+			let t;
+			return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+		}
+
+		// Thin fetch wrapper: attaches the JWT as both ?token= and a Bearer header.
+		async function api(path, opts = {}) {
+			const { method = 'GET', body = null, form = null } = opts;
+			const token = getToken();
+			const sep = path.includes('?') ? '&' : '?';
+			const url = API_BASE + path + (token ? sep + 'token=' + encodeURIComponent(token) : '');
+			const init = { method, headers: {} };
+			if (token) init.headers['Authorization'] = 'Bearer ' + token;
+			if (form) {
+				init.body = form; // FormData → browser sets multipart boundary
+			} else if (body) {
+				init.headers['Content-Type'] = 'application/json';
+				init.body = JSON.stringify(body);
+			}
+			try {
+				const res = await fetch(url, init);
+				return await res.json();
+			} catch (err) {
+				console.error('API error:', path, err);
+				return { success: false, message: 'Network error' };
+			}
+		}
+
+		// ── Overview stats ────────────────────────────────────────────────────
+		async function loadDashboardData(user) {
+			// The shell renders the top-bar greeting; guard in case it isn't present.
+			const g = document.getElementById('user-greeting');
+			if (g) g.textContent = 'Welcome, ' + (user.full_name || user.name || 'User') + '!';
+		}
+
+		async function loadOverviewStats() {
+			const r = await api('/dashboard/stats');
+			if (!r.success) return;
+			const s = r.data;
+			document.getElementById('active-jobs-count').textContent = s.active_jobs ?? 0;
+			document.getElementById('completed-count').textContent = s.completed_jobs ?? 0;
+			document.getElementById('rating-count').textContent = Number(s.rating || 0).toFixed(1);
+			if (currentUserRole === 'employer') {
+				document.getElementById('earnings-label').textContent = 'Spent';
+				document.getElementById('earnings-count').textContent = money(s.total_spent);
+			} else {
+				document.getElementById('earnings-label').textContent = 'Earnings';
+				document.getElementById('earnings-count').textContent = money(s.total_earned);
+			}
+		}
+
+		// ── Role-based menu ────────────────────────────────────────────────────
 		function initializeMenuByRole(role) {
 			currentUserRole = role;
-			const employeeMenu = document.getElementById('employee-menu');
-			const employerMenu = document.getElementById('employer-menu');
-			
-			if (role === 'employee') {
-				employeeMenu.style.display = 'block';
-				employerMenu.style.display = 'none';
-				document.getElementById('user-role-display').textContent = 'Job Seeker / Employee';
-			} else if (role === 'employer') {
-				employeeMenu.style.display = 'none';
-				employerMenu.style.display = 'block';
-				document.getElementById('user-role-display').textContent = 'Employer / Business Owner';
-			}
+			const disp = document.getElementById('user-role-display');
+			if (disp) disp.textContent = role === 'employer' ? 'Employer / Business Owner' : 'Job Seeker / Worker';
 		}
-		
-		// Section Switching with Role Awareness
+
+		// ── Section switching ──────────────────────────────────────────────────
+		// Map a section key -> [section element id, optional loader function].
+		const SECTION_MAP = {
+			'dashboard': ['dashboard-overview', () => loadOverviewStats()],
+			'browse-jobs': ['browse-jobs-section', () => loadBrowseJobs()],
+			'my-applications': ['my-applications-section', () => loadMyApplications()],
+			'employee-profile': ['employee-profile-section', () => loadEmployeeProfile()],
+			'post-job': ['post-job-section', null],
+			'my-jobs': ['my-jobs-section', () => loadEmployerJobs()],
+			'job-applications': ['job-applications-section', () => loadJobApplications()],
+			'employee-ratings': ['employee-ratings-section', () => loadCompletedJobsForRating()],
+			'employer-profile': ['employer-profile-section', () => loadEmployerProfile()],
+			'settings': ['settings-section', null],
+		};
+
 		function showSection(sectionName) {
-			(event || window.event).preventDefault();
+			// Called both from content links (with an event) and programmatically.
+			if (window.event && window.event.preventDefault) window.event.preventDefault();
 			closeSidebar();
-			
-			// Hide all sections
-			document.querySelectorAll('.dashboard-section').forEach(section => {
-				section.style.display = 'none';
+
+			const entry = SECTION_MAP[sectionName] || SECTION_MAP['dashboard'];
+			document.querySelectorAll('.dashboard-section').forEach((s) => { s.style.display = 'none'; });
+			const el = document.getElementById(entry[0]);
+			if (el) el.style.display = 'block';
+			if (typeof entry[1] === 'function') entry[1]();
+
+			// Reflect the active item in the shell sidebar.
+			document.querySelectorAll('.sidebar .sidebar-item').forEach((item) => {
+				const href = item.getAttribute('href') || '';
+				const isActive = href.endsWith('#' + sectionName)
+					|| (sectionName === 'dashboard' && /(^|\/)dashboard\.html$/.test(href));
+				item.classList.toggle('active', isActive);
 			});
-			
-			// Remove active class from all sidebar items
-			document.querySelectorAll('.sidebar-item').forEach(item => {
-				item.classList.remove('active');
+		}
+
+		// ========== EMPLOYEE (WORKER) FUNCTIONS ==========
+
+		// Populate the location filter from the API instead of hardcoding cities.
+		async function loadJobFilters() {
+			const sel = document.getElementById('filter-location');
+			if (!sel) return;
+			const r = await api('/search/filters');
+			const locations = (r.data && r.data.locations) || [];
+			locations.forEach((loc) => {
+				const opt = document.createElement('option');
+				opt.value = loc;
+				opt.textContent = loc;
+				sel.appendChild(opt);
 			});
-			
-			// Show selected section
-			switch(sectionName) {
-				case 'dashboard':
-					document.getElementById('dashboard-overview').style.display = 'block';
-					document.querySelector('.sidebar-item').classList.add('active');
-					break;
-					
-				// EMPLOYEE SECTIONS
-				case 'browse-jobs':
-					document.getElementById('browse-jobs-section').style.display = 'block';
-					document.getElementById('browse-jobs-link').classList.add('active');
-					break;
-				case 'my-applications':
-					document.getElementById('my-applications-section').style.display = 'block';
-					document.getElementById('my-applications-link').classList.add('active');
-					break;
-				case 'employee-profile':
-					document.getElementById('employee-profile-section').style.display = 'block';
-					document.getElementById('employee-profile-link').classList.add('active');
-					loadEmployeeProfile();
-					break;
-					
-				// EMPLOYER SECTIONS
-				case 'post-job':
-					document.getElementById('post-job-section').style.display = 'block';
-					document.getElementById('post-job-link').classList.add('active');
-					break;
-				case 'my-jobs':
-					document.getElementById('my-jobs-section').style.display = 'block';
-					document.getElementById('my-jobs-link').classList.add('active');
-					loadEmployerJobs();
-					break;
-				case 'job-applications':
-					document.getElementById('job-applications-section').style.display = 'block';
-					document.getElementById('job-applications-link').classList.add('active');
-					loadJobApplications();
-					break;
-				case 'employee-ratings':
-					document.getElementById('employee-ratings-section').style.display = 'block';
-					document.getElementById('employee-ratings-link').classList.add('active');
-					loadCompletedJobsForRating();
-					break;
-				case 'employer-profile':
-					document.getElementById('employer-profile-section').style.display = 'block';
-					document.getElementById('employer-profile-link').classList.add('active');
-					loadEmployerProfile();
-					break;
-					
-				// SHARED SECTIONS
-				case 'settings':
-					document.getElementById('settings-section').style.display = 'block';
-					document.getElementById('settings-link').classList.add('active');
-					break;
-			}
 		}
-		
-		// ========== EMPLOYEE FUNCTIONS ==========
-		
-		function loadEmployeeProfile() {
-			// Load from localStorage or Supabase initially
-			const profileData = JSON.parse(localStorage.getItem('employeeProfile') || '{}');
-			document.getElementById('emp-profile-name').textContent = profileData.name || 'Loading...';
-			document.getElementById('emp-profile-email').textContent = profileData.email || 'Loading...';
-			document.getElementById('emp-bio').value = profileData.bio || '';
-			document.getElementById('emp-skills').value = profileData.skills || '';
-			document.getElementById('emp-experience').value = profileData.experience || '';
-			document.getElementById('emp-rate').value = profileData.hourly_rate || '';
-		}
-		
-		function saveEmployeeProfile() {
-			const profileData = {
-				bio: document.getElementById('emp-bio').value,
-				skills: document.getElementById('emp-skills').value,
-				experience: document.getElementById('emp-experience').value,
-				hourly_rate: document.getElementById('emp-rate').value
-			};
-			localStorage.setItem('employeeProfile', JSON.stringify(profileData));
-			alert('Profile updated successfully!');
-		}
-		
-		// ========== EMPLOYER FUNCTIONS ==========
-		
-		function postJob() {
-			const jobData = {
-				title: document.getElementById('job-title').value,
-				location: document.getElementById('job-location').value,
-				budget: document.getElementById('job-pay').value,
-				duration: document.getElementById('job-duration').value,
-				description: document.getElementById('job-desc').value,
-				skills: document.getElementById('job-skills').value,
-				created_at: new Date().toISOString()
-			};
-			
-			if (!jobData.title || !jobData.location || !jobData.budget || !jobData.description) {
-				alert('Please fill in all required fields');
+
+		async function loadBrowseJobs() {
+			const container = document.getElementById('job-list');
+			container.innerHTML = '<p style="text-align: center; padding: 40px;">Loading available jobs...</p>';
+			const q = (document.getElementById('search-jobs')?.value || '').trim();
+			const loc = document.getElementById('filter-location')?.value || '';
+			const params = new URLSearchParams({ limit: '50' });
+			if (q) params.set('q', q);
+			if (loc) params.set('location', loc);
+
+			const r = await api('/search/jobs?' + params.toString());
+			const jobs = (r.data && r.data.jobs) || [];
+			if (!jobs.length) {
+				container.innerHTML = '<p style="text-align: center; padding: 40px;">No jobs match your search.</p>';
 				return;
 			}
-			
-			// Save to localStorage (later connect to Supabase)
-			const jobs = JSON.parse(localStorage.getItem('postedJobs') || '[]');
-			jobs.push(jobData);
-			localStorage.setItem('postedJobs', JSON.stringify(jobs));
-			
-			// Clear form
-			document.getElementById('job-title').value = '';
-			document.getElementById('job-location').value = '';
-			document.getElementById('job-pay').value = '';
-			document.getElementById('job-duration').value = 'one-time';
-			document.getElementById('job-desc').value = '';
-			document.getElementById('job-skills').value = '';
-			
-			alert('Job posted successfully!');
-		}
-		
-		function loadEmployerJobs() {
-			const jobs = JSON.parse(localStorage.getItem('postedJobs') || '[]');
-			const container = document.getElementById('employer-jobs');
-			
-			if (jobs.length === 0) {
-				container.innerHTML = '<p style="text-align: center; padding: 40px;">No jobs posted yet.</p>';
-				return;
-			}
-			
-			container.innerHTML = jobs.map((job, index) => `
+			container.innerHTML = jobs.map((job) => `
 				<div class="job-card">
 					<div class="job-header">
-						<h3>${job.title}</h3>
-						<span class="job-status">Active</span>
+						<h3>${escapeHtml(job.title)}</h3>
+						<span class="job-status">${escapeHtml((job.category || '').replace(/_/g, ' '))}</span>
 					</div>
-					<p><i class="fas fa-map-marker"></i> ${job.location}</p>
-					<p><i class="fas fa-money-bill"></i> Ksh ${job.budget}</p>
-					<p><strong>Duration:</strong> ${job.duration}</p>
-					<p>${job.description}</p>
+					<p><i class="fas fa-building"></i> ${escapeHtml(job.company_name || job.employer_name || 'Employer')}</p>
+					<p><i class="fas fa-map-marker"></i> ${escapeHtml(job.location_city || 'Remote')}</p>
+					<p><i class="fas fa-money-bill"></i> ${job.budget_type === 'fixed' ? money(job.budget_amount) : money(job.budget_min) + '+/hr'}</p>
+					<p>${escapeHtml((job.description || '').slice(0, 140))}${(job.description || '').length > 140 ? '…' : ''}</p>
 					<div class="job-actions">
-						<button class="btn-primary" onclick="editJob(${index})">Edit</button>
-						<button class="btn-secondary" onclick="deleteJob(${index})">Delete</button>
-						<button class="btn-primary" onclick="viewApplications(${index})">View Applications (0)</button>
+						<button class="btn-primary" onclick="applyToJob(${job.id})">Apply Now</button>
 					</div>
-				</div>
-			`).join('');
+				</div>`).join('');
 		}
-		
-		function loadJobApplications() {
-			// To be connected with Supabase
+
+		async function applyToJob(jobId) {
+			const cover = prompt('Add a short cover letter (optional):');
+			if (cover === null) return; // cancelled
+			const r = await api('/applications/apply', { method: 'POST', body: { job_id: jobId, cover_letter: cover } });
+			alert(r.success ? 'Application submitted!' : ('Could not apply: ' + (r.message || 'error')));
+		}
+
+		async function loadMyApplications() {
+			const container = document.getElementById('my-applications');
+			container.innerHTML = '<p style="text-align: center; padding: 40px;">Loading...</p>';
+			const r = await api('/applications/mine');
+			const apps = (r.data && r.data.applications) || [];
+			if (!apps.length) {
+				container.innerHTML = '<p style="text-align: center; padding: 40px;">No applications yet. Browse available jobs to apply.</p>';
+				return;
+			}
+			container.innerHTML = apps.map((a) => `
+				<div class="job-card">
+					<div class="job-header">
+						<h3>${escapeHtml(a.job_title)}</h3>
+						<span class="job-status status-${a.status}">${escapeHtml(a.status)}</span>
+					</div>
+					<p><i class="fas fa-building"></i> ${escapeHtml(a.employer_name || '')}</p>
+					<p><i class="fas fa-money-bill"></i> Your bid: ${money(a.bid_amount)}</p>
+					<p><i class="fas fa-clock"></i> Applied ${new Date(a.created_at).toLocaleDateString()}</p>
+				</div>`).join('');
+		}
+
+		async function loadEmployeeProfile() {
+			const r = await api('/worker-profile/get');
+			if (!r.success) return;
+			const p = r.data;
+			document.getElementById('emp-profile-name').textContent = p.full_name || 'Worker';
+			document.getElementById('emp-profile-email').textContent = p.email || '';
+			document.getElementById('emp-rating-value').textContent = Number(p.avg_rating || 0).toFixed(1);
+			document.getElementById('emp-bio').value = p.bio || '';
+			document.getElementById('emp-skills').value = (p.skills || []).join(', ');
+			document.getElementById('emp-experience').value = p.experience_years || '';
+			document.getElementById('emp-rate').value = p.hourly_rate || '';
+		}
+
+		async function saveEmployeeProfile() {
+			const form = new FormData();
+			form.append('bio', document.getElementById('emp-bio').value);
+			form.append('hourly_rate', document.getElementById('emp-rate').value || '0');
+			form.append('experience_years', document.getElementById('emp-experience').value || '0');
+			const skills = document.getElementById('emp-skills').value.split(',').map((s) => s.trim()).filter(Boolean);
+			form.append('skills', JSON.stringify(skills));
+			const photo = document.getElementById('employee-avatar').files[0];
+			if (photo) form.append('profile_photo', photo);
+
+			const r = await api('/worker-profile/update', { method: 'POST', form });
+			alert(r.success ? 'Profile updated successfully!' : ('Update failed: ' + (r.message || 'error')));
+			if (r.success) loadEmployeeProfile();
+		}
+
+		// ========== EMPLOYER FUNCTIONS ==========
+
+		async function postJob() {
+			const title = document.getElementById('job-title').value.trim();
+			const location = document.getElementById('job-location').value.trim();
+			const budget = document.getElementById('job-pay').value;
+			const duration = document.getElementById('job-duration').value;
+			const description = document.getElementById('job-desc').value.trim();
+			const skills = document.getElementById('job-skills').value.split(',').map((s) => s.trim()).filter(Boolean);
+
+			if (!title || !description || !budget) {
+				alert('Please fill in the title, budget and description.');
+				return;
+			}
+			const body = {
+				title, description, category: 'other', budget_type: 'fixed',
+				budget_amount: parseFloat(budget) || 0, duration,
+				required_skills: skills, visibility: 'public',
+				location_required: !!location, location_city: location,
+			};
+			const r = await api('/jobs/create', { method: 'POST', body });
+			if (r.success) {
+				['job-title', 'job-location', 'job-pay', 'job-desc', 'job-skills'].forEach((id) => {
+					document.getElementById(id).value = '';
+				});
+				alert('Job posted successfully!');
+				loadOverviewStats();
+			} else {
+				alert('Could not post job: ' + (r.message || 'error'));
+			}
+		}
+
+		async function loadEmployerJobs() {
+			const container = document.getElementById('employer-jobs');
+			container.innerHTML = '<p style="text-align: center; padding: 40px;">Loading...</p>';
+			const r = await api('/jobs/my-jobs?limit=50');
+			const jobs = (r.data && r.data.jobs) || [];
+			if (!jobs.length) {
+				container.innerHTML = '<p style="text-align: center; padding: 40px;">No jobs posted yet. <a href="#" onclick="showSection(\'post-job\')" style="color: var(--primary-color); font-weight: 600;">Post your first job</a></p>';
+				return;
+			}
+			container.innerHTML = jobs.map((job) => `
+				<div class="job-card">
+					<div class="job-header">
+						<h3>${escapeHtml(job.title)}</h3>
+						<span class="job-status status-${job.status}">${escapeHtml(job.status.replace('_', ' '))}</span>
+					</div>
+					<p><i class="fas fa-map-marker"></i> ${escapeHtml(job.location_city || 'Remote')}</p>
+					<p><i class="fas fa-money-bill"></i> ${job.budget_type === 'fixed' ? money(job.budget_amount) : money(job.budget_min) + '+/hr'}</p>
+					<p><i class="fas fa-users"></i> ${job.proposals_count || 0} proposals</p>
+					<p>${escapeHtml((job.description || '').slice(0, 140))}</p>
+					<div class="job-actions">
+						<button class="btn-secondary" onclick="deleteJob(${job.id})">Delete</button>
+						<button class="btn-primary" onclick="showSection('job-applications')">View Applications</button>
+					</div>
+				</div>`).join('');
+		}
+
+		async function deleteJob(id) {
+			if (!confirm('Are you sure you want to delete this job?')) return;
+			const r = await api('/jobs/delete?id=' + id, { method: 'DELETE' });
+			if (r.success) { loadEmployerJobs(); loadOverviewStats(); }
+			else alert('Delete failed: ' + (r.message || 'error'));
+		}
+
+		async function loadJobApplications() {
 			const container = document.getElementById('applications-list');
-			container.innerHTML = '<p style="text-align: center; padding: 40px;">No applications yet.</p>';
+			container.innerHTML = '<p style="text-align: center; padding: 40px;">Loading...</p>';
+			const jr = await api('/jobs/my-jobs?limit=50');
+			const jobs = (jr.data && jr.data.jobs) || [];
+			if (!jobs.length) {
+				container.innerHTML = '<p style="text-align: center; padding: 40px;">Post a job to start receiving applications.</p>';
+				return;
+			}
+			let html = '';
+			for (const job of jobs) {
+				const ar = await api('/applications/job?job_id=' + job.id);
+				const apps = (ar.data && ar.data.applications) || [];
+				if (!apps.length) continue;
+				html += `<h3 style="margin: 20px 0 10px;">${escapeHtml(job.title)} <span style="color:#999;font-weight:400;">(${apps.length})</span></h3>`;
+				html += apps.map((a) => `
+					<div class="job-card">
+						<div class="job-header">
+							<h3>${escapeHtml(a.worker_name)}</h3>
+							<span class="job-status status-${a.status}">${escapeHtml(a.status)}</span>
+						</div>
+						<p><i class="fas fa-briefcase"></i> ${escapeHtml(a.professional_title || 'Worker')}</p>
+						<p><i class="fas fa-money-bill"></i> Bid: ${money(a.bid_amount)}</p>
+						<p>${escapeHtml(a.cover_letter || '')}</p>
+						${a.status === 'pending' ? `<div class="job-actions"><button class="btn-primary" onclick="hireApplicant(${a.id})">Hire</button></div>` : ''}
+					</div>`).join('');
+			}
+			container.innerHTML = html || '<p style="text-align: center; padding: 40px;">No applications received yet.</p>';
 		}
-		
-		function loadCompletedJobsForRating() {
-			// To be connected with Supabase to load completed jobs
+
+		async function hireApplicant(appId) {
+			if (!confirm('Hire this applicant for the job?')) return;
+			const r = await api('/applications/hire', { method: 'POST', body: { application_id: appId } });
+			if (r.success) { alert('Applicant hired!'); loadJobApplications(); loadOverviewStats(); }
+			else alert('Could not hire: ' + (r.message || 'error'));
+		}
+
+		async function loadCompletedJobsForRating() {
 			const container = document.getElementById('completed-jobs');
-			container.innerHTML = '<p style="text-align: center; padding: 40px;">No completed jobs to rate yet.</p>';
+			container.innerHTML = '<p style="text-align: center; padding: 40px;">Loading...</p>';
+			const r = await api('/applications/hirings');
+			const hirings = ((r.data && r.data.hirings) || []).filter((h) => !h.has_reviewed);
+			if (!hirings.length) {
+				container.innerHTML = '<p style="text-align: center; padding: 40px;">No engagements awaiting a review.</p>';
+				return;
+			}
+			container.innerHTML = hirings.map((h) => `
+				<div class="job-card">
+					<div class="job-header">
+						<h3>${escapeHtml(h.worker_name)}</h3>
+						<span class="job-status status-${h.status}">${escapeHtml(h.status)}</span>
+					</div>
+					<p><i class="fas fa-briefcase"></i> ${escapeHtml(h.job_title)}</p>
+					<div class="form-group" style="margin-top: 10px;">
+						<label>Rating</label>
+						<select id="rate-${h.id}" class="form-control">
+							<option value="5">★★★★★ Excellent</option>
+							<option value="4">★★★★ Good</option>
+							<option value="3">★★★ Average</option>
+							<option value="2">★★ Poor</option>
+							<option value="1">★ Bad</option>
+						</select>
+						<input type="text" id="rate-title-${h.id}" class="form-control" placeholder="Review title" style="margin-top: 8px;">
+						<textarea id="rate-desc-${h.id}" class="form-control" placeholder="Share your experience..." rows="2" style="margin-top: 8px;"></textarea>
+						<button class="btn-primary" style="margin-top: 8px;" onclick="submitRating(${h.id}, ${h.worker_id}, ${h.job_id})">Submit Review</button>
+					</div>
+				</div>`).join('');
 		}
-		
-		function loadEmployerProfile() {
-			const profileData = JSON.parse(localStorage.getItem('employerProfile') || '{}');
-			document.getElementById('emp-company-name').textContent = profileData.company_name || 'Company Name';
-			document.getElementById('company-name').value = profileData.company_name || '';
-			document.getElementById('company-desc').value = profileData.description || '';
-			document.getElementById('company-phone').value = profileData.phone || '';
-			document.getElementById('company-type').value = profileData.business_type || '';
+
+		async function submitRating(hiringId, workerId, jobId) {
+			const rating = parseInt(document.getElementById('rate-' + hiringId).value, 10);
+			const title = document.getElementById('rate-title-' + hiringId).value;
+			const description = document.getElementById('rate-desc-' + hiringId).value;
+			const r = await api('/reviews/submit', {
+				method: 'POST',
+				body: { hiring_id: hiringId, reviewee_id: workerId, job_id: jobId, review_type: 'for_worker', rating, title, description },
+			});
+			if (r.success) { alert('Review submitted!'); loadCompletedJobsForRating(); }
+			else alert('Could not submit review: ' + (r.message || 'error'));
 		}
-		
-		function saveEmployerProfile() {
-			const profileData = {
+
+		async function loadEmployerProfile() {
+			const r = await api('/employer-profile/get');
+			if (!r.success) return;
+			const p = r.data;
+			document.getElementById('emp-company-name').textContent = p.company_name || 'Company Name';
+			document.getElementById('emp-company-email').textContent = p.email || '';
+			document.getElementById('emp-rep-score').textContent = p.jobs_completed || 0;
+			document.getElementById('company-name').value = p.company_name || '';
+			document.getElementById('company-desc').value = p.description || '';
+			document.getElementById('company-phone').value = p.phone || '';
+			document.getElementById('company-type').value = p.business_type || '';
+		}
+
+		async function saveEmployerProfile() {
+			const body = {
 				company_name: document.getElementById('company-name').value,
 				description: document.getElementById('company-desc').value,
 				phone: document.getElementById('company-phone').value,
-				business_type: document.getElementById('company-type').value
+				business_type: document.getElementById('company-type').value,
 			};
-			localStorage.setItem('employerProfile', JSON.stringify(profileData));
-			alert('Profile updated successfully!');
+			const r = await api('/employer-profile/update', { method: 'POST', body });
+			alert(r.success ? 'Profile updated successfully!' : ('Update failed: ' + (r.message || 'error')));
+			if (r.success) loadEmployerProfile();
 		}
-		
-		function deleteJob(index) {
-			if (confirm('Are you sure you want to delete this job?')) {
-				const jobs = JSON.parse(localStorage.getItem('postedJobs') || '[]');
-				jobs.splice(index, 1);
-				localStorage.setItem('postedJobs', JSON.stringify(jobs));
-				loadEmployerJobs();
+
+		async function changePassword() {
+			const current = document.getElementById('current-password').value;
+			const next = document.getElementById('new-password').value;
+			if (!current || !next) { alert('Please fill in both password fields.'); return; }
+			const r = await api('/auth/change-password', {
+				method: 'POST',
+				body: { current_password: current, new_password: next },
+			});
+			if (r.success) {
+				alert('Password updated successfully!');
+				document.getElementById('current-password').value = '';
+				document.getElementById('new-password').value = '';
+			} else {
+				alert('Could not change password: ' + (r.message || 'error'));
 			}
 		}
-		
-		function changePassword() {
-			alert('Password change functionality will be connected to Supabase');
-		}
-    	
-    	// Specific Dashboard logic
-        document.addEventListener('DOMContentLoaded', async () => {
-        	const user = await checkUserSession();
-        	if (!user) {
-                window.location.href = '../../index.html';
-                return;
-        	}
-        	
-        	// Determine user role and initialize menu
-        	const userRole = user.user_metadata?.role || 'employee';
-        	initializeMenuByRole(userRole);
-        	
-            loadDashboardData(user);
-    	});
+
+		// ── Boot ────────────────────────────────────────────────────────────────
+		document.addEventListener('DOMContentLoaded', async () => {
+			const token = getToken();
+			if (!token) { window.location.href = '../pages/auth/login.html'; return; }
+
+			const me = await api('/auth/me');
+			if (!me.success || !me.data || !me.data.user) {
+				window.location.href = '../pages/auth/login.html';
+				return;
+			}
+			currentUser = me.data.user;
+			const role = currentUser.role === 'employer' ? 'employer' : 'employee';
+			initializeMenuByRole(role);
+			loadDashboardData(currentUser);
+			if (role !== 'employer') loadJobFilters();
+
+			// Live search on the Browse Jobs section.
+			const searchInput = document.getElementById('search-jobs');
+			if (searchInput) searchInput.addEventListener('input', debounce(loadBrowseJobs, 400));
+			const locFilter = document.getElementById('filter-location');
+			if (locFilter) locFilter.addEventListener('change', loadBrowseJobs);
+
+			// Open the section named in the URL hash (sidebar links use #section),
+			// and react when the hash changes while already on this page.
+			const openFromHash = () => showSection((location.hash || '#dashboard').slice(1));
+			window.addEventListener('hashchange', openFromHash);
+			openFromHash();
+		});
 	</script>
 </body>
 </html>

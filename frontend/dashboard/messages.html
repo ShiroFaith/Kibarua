@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Messages | Kibarua</title>
-    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         .messages-container {
@@ -50,7 +51,7 @@
         }
 
         .search-box button {
-            background: #667eea;
+            background: #2ecc71;
             color: white;
             border: none;
             border-radius: 50%;
@@ -86,7 +87,7 @@
 
         .conversation-item.active {
             background: #ecefff;
-            border-left: 3px solid #667eea;
+            border-left: 3px solid #2ecc71;
             padding-left: 12px;
         }
 
@@ -94,7 +95,7 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: #667eea;
+            background: #2ecc71;
             color: white;
             display: flex;
             align-items: center;
@@ -127,7 +128,7 @@
         }
 
         .unread-badge {
-            background: #667eea;
+            background: #2ecc71;
             color: white;
             border-radius: 50%;
             width: 24px;
@@ -166,7 +167,7 @@
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            background: #667eea;
+            background: #2ecc71;
             color: white;
             display: flex;
             align-items: center;
@@ -205,8 +206,8 @@
 
         .icon-btn:hover {
             background: #f8f8f8;
-            border-color: #667eea;
-            color: #667eea;
+            border-color: #2ecc71;
+            color: #2ecc71;
         }
 
         .messages-body {
@@ -261,7 +262,7 @@
         }
 
         .message-group.sent .message-bubble {
-            background: #667eea;
+            background: #2ecc71;
             color: white;
             border-radius: 18px 4px 18px 18px;
         }
@@ -353,7 +354,7 @@
         .attachment-btn {
             background: none;
             border: none;
-            color: #667eea;
+            color: #2ecc71;
             cursor: pointer;
             font-size: 16px;
             padding: 0;
@@ -363,7 +364,7 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: #667eea;
+            background: #2ecc71;
             color: white;
             border: none;
             cursor: pointer;
@@ -455,7 +456,7 @@
         }
     </style>
 </head>
-<body>
+<body class="dashboard-body">
     <nav class="nav-bar">
         <div class="logo"><h2>KIBARUA</h2></div>
         <div class="nav-links">
@@ -499,13 +500,13 @@
     </div>
 
     <script>
-        const API_BASE_URL = 'http://localhost/Nirus%20Plt/backend/index.php';
+        const API_BASE_URL = 'http://localhost:5050';
         let currentConversationId = null;
         let messageRefreshInterval;
 
         document.addEventListener('DOMContentLoaded', () => {
             if (!localStorage.getItem('token')) {
-                window.location.href = '../auth/login.html';
+                window.location.href = '../pages/auth/login.html';
                 return;
             }
             loadConversations();
@@ -577,6 +578,23 @@
             }
         }
 
+        // Render just the message bubbles (used for both first render and polls).
+        function renderBubbles(messages, userId) {
+            if (!messages || messages.length === 0) {
+                return '<p style="text-align: center; color: #999;">No messages yet</p>';
+            }
+            return messages.map(msg => `
+                <div class="message-group ${msg.sender_id === userId ? 'sent' : 'received'}">
+                    ${msg.sender_id !== userId ? '<div class="message-avatar"></div>' : ''}
+                    <div class="message-content">
+                        <div class="message-bubble">${escapeHtml(msg.message_body)}</div>
+                        <div class="message-time">${formatTime(msg.created_at)}</div>
+                    </div>
+                    ${msg.sender_id === userId ? '<div class="message-avatar"></div>' : ''}
+                </div>
+            `).join('');
+        }
+
         // Display messages
         function displayMessages(messages, conversationId, userName) {
             const token = localStorage.getItem('token');
@@ -584,6 +602,19 @@
             const userId = decoded.user_id;
 
             const messagesPanel = document.getElementById('messagesContent');
+            const existingBody = document.getElementById('messagesBody');
+
+            // If this conversation is already open (e.g. a 2s poll), only refresh
+            // the message list so we never wipe the user's in-progress draft or
+            // steal focus from the input.
+            if (existingBody && messagesPanel.dataset.conversationId === String(conversationId)) {
+                const nearBottom = existingBody.scrollHeight - existingBody.scrollTop - existingBody.clientHeight < 80;
+                existingBody.innerHTML = renderBubbles(messages, userId);
+                if (nearBottom) existingBody.scrollTop = existingBody.scrollHeight;
+                return;
+            }
+
+            messagesPanel.dataset.conversationId = String(conversationId);
             messagesPanel.innerHTML = `
                 <div class="messages-header">
                     <div class="conversation-header-info">
@@ -598,19 +629,7 @@
                     </div>
                 </div>
 
-                <div class="messages-body" id="messagesBody">
-                    ${messages.length === 0 ? '<p style="text-align: center; color: #999;">No messages yet</p>' : ''}
-                    ${messages.map(msg => `
-                        <div class="message-group ${msg.sender_id === userId ? 'sent' : 'received'}">
-                            ${msg.sender_id !== userId ? '<div class="message-avatar"></div>' : ''}
-                            <div class="message-content">
-                                <div class="message-bubble">${escapeHtml(msg.message_body)}</div>
-                                <div class="message-time">${formatTime(msg.created_at)}</div>
-                            </div>
-                            ${msg.sender_id === userId ? '<div class="message-avatar"></div>' : ''}
-                        </div>
-                    `).join('')}
-                </div>
+                <div class="messages-body" id="messagesBody">${renderBubbles(messages, userId)}</div>
 
                 <div class="messages-input">
                     <div class="input-wrapper">
@@ -626,13 +645,9 @@
                 </div>
             `;
 
-            // Scroll to bottom
+            // Scroll to bottom + focus the input (first render only)
             const messagesBody = document.getElementById('messagesBody');
-            if (messagesBody) {
-                messagesBody.scrollTop = messagesBody.scrollHeight;
-            }
-
-            // Focus input
+            if (messagesBody) messagesBody.scrollTop = messagesBody.scrollHeight;
             document.getElementById('messageInput').focus();
         }
 
@@ -649,6 +664,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
+                        conversation_id: conversationId,
                         recipient_id: getCurrentRecipientId(),
                         message: message,
                         attachments: []
@@ -725,8 +741,9 @@
         function logout() {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
-            window.location.href = '../auth/login.html';
+            window.location.href = '../pages/auth/login.html';
         }
     </script>
+    <script src="../assets/js/dashboard-shell.js"></script>
 </body>
 </html>

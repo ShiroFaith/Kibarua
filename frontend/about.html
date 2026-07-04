@@ -3,18 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us | Kibarua Platform</title>
+    <title>About | Kibarua</title>
+    <meta name="description" content="Learn how Kibarua connects Kenyan employers and workers for gig work - post jobs, apply, get hired, get paid in KES, and build a trusted reputation.">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <nav class="nav-bar">
         <div class="logo"><h2>KIBARUA</h2></div>
+        <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle menu"><i class="fas fa-bars"></i></button>
         <div class="nav-links">
             <a href="index.html">Home</a>
             <a href="about.html">About</a>
             <a href="contact.html">Contact</a>
-            <a href="pages/auth/login.html" onclick="openModal('login-modal')">Login</a>
+            <a href="pages/auth/login.html">Login</a>
             <a href="pages/auth/register.html" class="btn-primary" style="color: white;">Sign Up</a>
         </div>
     </nav>
@@ -24,63 +26,84 @@
         <section class="hero" style="height: 40vh;">
             <div class="glass-card">
                 <h1>About Kibarua</h1>
-                <p>Empowering Kenya's Informal Workforce</p>
+                <p>Connecting Kenya's workforce with the people who need it.</p>
             </div>
         </section>
 
-        <!-- About Us Section -->
+        <!-- Mission -->
         <section class="about-section">
             <div class="container">
-                <h2>Our Mission</h2>
-                <p>Kibarua is revolutionizing the casual labor market in Kenya by creating a centralized, transparent platform that connects job seekers with employers. We believe every worker deserves fair pay, safe working conditions, and dignity in their work.</p>
+                <h2>What is Kibarua?</h2>
+                <p>Kibarua ("casual work" in Swahili) is an online marketplace that connects Kenyan employers with casual and skilled workers. Employers post gigs of every kind, from everyday casual jobs like cleaning, house help, plumbing, gardening and cooking to skilled work like web development, design and writing, and workers apply with a proposal and their price. Once hired, both sides coordinate through in-app messaging, the worker is paid in KES on completion, and each engagement ends with a review that builds a trusted reputation over time.</p>
+                <p style="margin-top:16px;">Our goal is simple: make finding work and hiring help fast, transparent and fair - with clear budgets, direct communication, and no guesswork.</p>
             </div>
         </section>
 
-        <!-- Values Section -->
+        <!-- How it works recap -->
         <section class="values-section">
             <div class="container">
-                <h2>Our Values</h2>
+                <h2>How Kibarua Works</h2>
                 <div class="values-grid">
                     <div class="value-card glass-card">
-                        <i class="fas fa-handshake" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 15px;"></i>
-                        <h3>Trust</h3>
-                        <p>We build trust between employers and workers through transparent communication and fair practices.</p>
+                        <i class="fas fa-file-signature" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 15px;"></i>
+                        <h3>1. Post or Apply</h3>
+                        <p>Employers post a job with a budget and skills. Workers search, filter and apply with a bid and cover letter.</p>
                     </div>
                     <div class="value-card glass-card">
-                        <i class="fas fa-shield-alt" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 15px;"></i>
-                        <h3>Safety</h3>
-                        <p>Worker safety and well-being are our top priorities in every job we facilitate.</p>
+                        <i class="fas fa-user-check" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 15px;"></i>
+                        <h3>2. Hire &amp; Collaborate</h3>
+                        <p>Employers compare applicants, hire the best fit, and coordinate the work through in-app chat.</p>
                     </div>
                     <div class="value-card glass-card">
-                        <i class="fas fa-star" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 15px;"></i>
-                        <h3>Excellence</h3>
-                        <p>We strive for excellence in every service we provide to our community.</p>
+                        <i class="fas fa-circle-check" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 15px;"></i>
+                        <h3>3. Complete &amp; Review</h3>
+                        <p>On completion the worker's KES wallet is credited, an invoice is recorded, and both sides leave a rating.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Team Section -->
+        <!-- Why choose -->
         <section class="team-section">
             <div class="container">
                 <h2>Why Choose Kibarua?</h2>
                 <div class="benefits-grid">
                     <div class="benefit-item">
-                        <h4><i class="fas fa-bolt"></i> Fast & Easy</h4>
-                        <p>Post or find jobs in minutes, not days.</p>
+                        <h4><i class="fas fa-bolt"></i> Fast to Start</h4>
+                        <p>Post a job or apply to one in minutes - no lengthy onboarding.</p>
                     </div>
                     <div class="benefit-item">
-                        <h4><i class="fas fa-money-bill"></i> Fair Wages</h4>
-                        <p>Transparent pricing with no hidden fees.</p>
+                        <h4><i class="fas fa-eye"></i> Transparent Pricing</h4>
+                        <p>Every job shows its budget in KES, and workers set their own bids.</p>
                     </div>
                     <div class="benefit-item">
-                        <h4><i class="fas fa-shield-alt"></i> Secure Platform</h4>
-                        <p>Your data and payments are protected.</p>
+                        <h4><i class="fas fa-wallet"></i> Built-in Payments</h4>
+                        <p>Earnings settle to your wallet on completion, with transactions and invoices you can track.</p>
                     </div>
                     <div class="benefit-item">
-                        <h4><i class="fas fa-users"></i> Community</h4>
-                        <p>Join thousands of workers and employers.</p>
+                        <h4><i class="fas fa-star"></i> Reputation That Counts</h4>
+                        <p>Two-way reviews mean trust is earned through real, completed work.</p>
                     </div>
+                    <div class="benefit-item">
+                        <h4><i class="fas fa-lightbulb"></i> Smart Matching</h4>
+                        <p>Workers receive job recommendations scored against their skills.</p>
+                    </div>
+                    <div class="benefit-item">
+                        <h4><i class="fas fa-map-location-dot"></i> Made for Kenya</h4>
+                        <p>Local categories, KES pricing, and remote or on-site options.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="cta-section">
+            <div class="container glass-card">
+                <h2>Join Kibarua</h2>
+                <p>Create a free account as a worker or an employer and get started today.</p>
+                <div style="margin-top: 24px;">
+                    <a href="pages/auth/register.html" class="btn-primary" style="color: white; text-decoration: none; padding: 12px 30px; display: inline-block; border-radius: 5px; font-size: 1.1rem; margin-right: 10px;">Create Account</a>
+                    <a href="contact.html" class="btn-secondary" style="text-decoration: none; padding: 12px 30px; display: inline-block; border-radius: 5px; font-size: 1.1rem;">Contact Us</a>
                 </div>
             </div>
         </section>
@@ -92,7 +115,7 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h4>KIBARUA</h4>
-                    <p>Empowering Kenya's informal workforce through technology.</p>
+                    <p>Kenya's marketplace for casual &amp; skilled gig work.</p>
                 </div>
                 <div class="footer-section">
                     <h4>Quick Links</h4>
@@ -100,7 +123,7 @@
                         <li><a href="index.html">Home</a></li>
                         <li><a href="about.html">About</a></li>
                         <li><a href="contact.html">Contact</a></li>
-                        <li><a href="login.html">Login</a></li>
+                        <li><a href="pages/auth/login.html">Login</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
@@ -114,9 +137,10 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025reset  zooms  Kibarua Platform. All rights reserved.</p>
+                <p>&copy; 2026 Kibarua Platform. All rights reserved.</p>
             </div>
         </div>
     </footer>
+    <script src="assets/js/public-nav.js"></script>
 </body>
 </html>

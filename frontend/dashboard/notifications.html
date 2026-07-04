@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notifications - Nirus Plt</title>
-    <link rel="stylesheet" href="/Nirus%20Plt/assets/css/style.css">
+    <title>Notifications | Kibarua Platform</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --primary: #007bff;
@@ -466,9 +468,9 @@
         }
     </style>
 </head>
-<body>
+<body class="dashboard-body">
     <div class="navbar">
-        <h1>📢 Notifications</h1>
+        <h1><i class="fas fa-bell"></i> Notifications</h1>
         <div class="navbar-actions">
             <button class="btn btn-secondary btn-sm" onclick="loadNotifications()">Refresh</button>
         </div>
@@ -499,11 +501,11 @@
             <div class="filter-group">
                 <label>Filter by type:</label>
                 <span class="filter-tag active" onclick="filterByType('')">All</span>
-                <span class="filter-tag" onclick="filterByType('job_match')">🎯 Jobs</span>
-                <span class="filter-tag" onclick="filterByType('message')">💬 Messages</span>
-                <span class="filter-tag" onclick="filterByType('proposal')">📝 Proposals</span>
-                <span class="filter-tag" onclick="filterByType('review')">⭐ Reviews</span>
-                <span class="filter-tag" onclick="filterByType('payment')">💳 Payments</span>
+                <span class="filter-tag" onclick="filterByType('job_match')"><i class="fas fa-bullseye"></i> Jobs</span>
+                <span class="filter-tag" onclick="filterByType('message')"><i class="fas fa-comment"></i> Messages</span>
+                <span class="filter-tag" onclick="filterByType('proposal')"><i class="fas fa-file-lines"></i> Proposals</span>
+                <span class="filter-tag" onclick="filterByType('review')"><i class="fas fa-star"></i> Reviews</span>
+                <span class="filter-tag" onclick="filterByType('payment')"><i class="fas fa-wallet"></i> Payments</span>
             </div>
         </div>
 
@@ -521,7 +523,7 @@
     </div>
 
     <script>
-        const API_BASE = '/Nirus%20Plt/backend/index.php/api';
+        const API_BASE = 'http://localhost:5050/api';
         const TOKEN = localStorage.getItem('jwt_token');
 
         let currentPage = 1;
@@ -776,11 +778,11 @@
 
         function formatType(type) {
             const types = {
-                'job_match': '🎯 Job Match',
-                'message': '💬 Message',
-                'review': '⭐ Review',
-                'payment': '💳 Payment',
-                'proposal': '📝 Proposal',
+                'job_match': 'Job Match',
+                'message': 'Message',
+                'review': 'Review',
+                'payment': 'Payment',
+                'proposal': 'Proposal',
                 'system': '⚙️ System'
             };
             return types[type] || type;
@@ -837,5 +839,6 @@
             };
         });
     </script>
+    <script src="../assets/js/dashboard-shell.js"></script>
 </body>
 </html>
